@@ -5,7 +5,7 @@ import ru.practicum.shareit.item.model.Item;
 
 public class MapToItem {
     public static Item fromDto(ItemDto itemDto, long user) {
-        Item item=Item.builder()
+        Item item = Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
@@ -17,7 +17,7 @@ public class MapToItem {
     }
 
     public static ItemDto toDto(Item item) {
-        ItemDto itemDto=ItemDto.builder()
+        ItemDto itemDto = ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder(toBuilder = true)
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
 public class ItemDto {
     long id;

@@ -47,7 +47,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id", required = true) long user, @RequestParam(required = true) String text ) {
+    public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id", required = true) long user, @RequestParam(required = true) String text) {
         log.info("Поиск вещей по фразе {}", text);
         return itemService.search(user, text);
     }

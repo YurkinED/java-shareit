@@ -10,10 +10,16 @@ import java.util.List;
 public interface UserStorage {
 
     List<User> getAll();
+
     User add(User user);
+
     User update(User user);
+
     User get(long userId);
+
     User delete(long userId);
+
     Boolean isExistByEmail(User user);
+
     Boolean isExistById(Long userId);
 }
