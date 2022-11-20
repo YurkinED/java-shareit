@@ -23,7 +23,14 @@ public class ItemService {
     private final UserService userService;
 
     public List<ItemDto> getAll(Long user) {
-        return itemStorage.getAll().stream().filter(x -> x.getUser() == user).map(x -> MapToItem.toDto(x)).toList();
+        List<ItemDto> list = new ArrayList<>();
+        for (Item x : itemStorage.getAll()) {
+            if (x.getUser() == user) {
+                ItemDto itemDto = MapToItem.toDto(x);
+                list.add(itemDto);
+            }
+        }
+        return list;
     }
 
     public ItemDto add(Long user, ItemDto itemDto) {
@@ -68,9 +75,14 @@ public class ItemService {
         if (searchText == null || searchText.equals("")) {
             return new ArrayList<>();
         }
-        return itemStorage.search(searchText).stream()
-                .filter(x -> x.getAvailable() == true)
-                .map(x -> MapToItem.toDto(x)).toList();
+        List<ItemDto> list = new ArrayList<>();
+        for (Item x : itemStorage.search(searchText)) {
+            if (x.getAvailable() == true) {
+                ItemDto itemDto = MapToItem.toDto(x);
+                list.add(itemDto);
+            }
+        }
+        return list;
     }
 
 }
