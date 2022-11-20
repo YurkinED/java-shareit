@@ -17,5 +17,5 @@ public interface ItemStorage {
 
     Item get(long itemId);
 
-    Boolean isExistById(Long itemId);
+    Boolean isExistById(long itemId);
 }

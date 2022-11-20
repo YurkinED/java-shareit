@@ -38,7 +38,7 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Boolean isExistById(Long userId) {
+    public Boolean isExistById(long userId) {
         return items.containsKey(userId);
     }
 

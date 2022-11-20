@@ -22,7 +22,7 @@ public class ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
 
-    public List<ItemDto> getAll(Long user) {
+    public List<ItemDto> getAll(long user) {
         List<ItemDto> list = new ArrayList<>();
         for (Item x : itemStorage.getAll()) {
             if (x.getUser() == user) {
@@ -33,7 +33,7 @@ public class ItemService {
         return list;
     }
 
-    public ItemDto add(Long user, ItemDto itemDto) {
+    public ItemDto add(long user, ItemDto itemDto) {
         if (!userService.isExistById(user)) {
             throw new NoUserException("Такого пользователь не существует");
         }
@@ -41,7 +41,7 @@ public class ItemService {
         return MapToItem.toDto(itemStorage.add(item));
     }
 
-    public ItemDto update(Long user, Long itemId, ItemDto itemDto) {
+    public ItemDto update(long user, long itemId, ItemDto itemDto) {
         System.out.println(itemDto);
         System.out.println(itemStorage.isExistById(itemId));
         System.out.println(userService.isExistById(user));
