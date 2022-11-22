@@ -23,19 +23,19 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id", required = true) long user) {
+    public List<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long user) {
         log.info("Получение всех вещей");
         return itemService.getAll(user);
     }
 
     @PostMapping("")
-    public ItemDto createItem(@RequestHeader(value = "X-Sharer-User-Id", required = true) long user, @Valid @RequestBody ItemDto item) {
+    public ItemDto createItem(@RequestHeader(value = "X-Sharer-User-Id") long user, @Valid @RequestBody ItemDto item) {
         log.info("Добавление вещей: {}", item);
         return itemService.add(user, item);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(value = "X-Sharer-User-Id", required = true) long user, @PathVariable("itemId") long itemId, @RequestBody ItemDto item) {
+    public ItemDto updateItem(@RequestHeader(value = "X-Sharer-User-Id") long user, @PathVariable("itemId") long itemId, @RequestBody ItemDto item) {
         log.info("Обновление вещей: {},{}, {}", user, itemId,  item);
         return itemService.update(user, itemId, item);
     }
@@ -47,7 +47,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id", required = true) long user, @RequestParam(required = true) String text) {
+    public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id") long user, @RequestParam(required = true) String text) {
         log.info("Поиск вещей по фразе {}", text);
         return itemService.search(user, text);
     }

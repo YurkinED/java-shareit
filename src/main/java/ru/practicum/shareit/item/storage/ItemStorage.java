@@ -5,7 +5,7 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-@Component("itemDbStorage")
+@Component
 public interface ItemStorage {
     List<Item> getAll();
 
