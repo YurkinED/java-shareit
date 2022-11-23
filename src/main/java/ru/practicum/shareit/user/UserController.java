@@ -9,7 +9,6 @@ import ru.practicum.shareit.Create;
 import ru.practicum.shareit.Update;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -19,7 +18,6 @@ import java.util.List;
         consumes = MediaType.ALL_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-@Validated
 public class UserController {
 
     private final UserService userService;
@@ -31,15 +29,14 @@ public class UserController {
     }
 
     @PostMapping("")
-    @Validated(Create.class)
-    public UserDto create(@Valid @RequestBody UserDto user) {
+    public UserDto create(@Validated(Create.class) @RequestBody UserDto user) {
         log.info("Добавление пользователя: {}", user);
         return userService.add(user);
     }
 
     @PatchMapping("/{userId}")
-    @Validated(Update.class)
-    public UserDto update(@PathVariable("userId") long userId, @Valid @RequestBody UserDto user) {
+    public UserDto update(@PathVariable("userId") long userId,
+                          @Validated(Update.class) @RequestBody UserDto user) {
         log.info("Обновление пользователя:{}, {}", userId, user);
         return userService.update(userId, user);
     }

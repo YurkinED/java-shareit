@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,18 +15,20 @@ public class InMemoryItemStorage implements ItemStorage {
     private int id = 0;
 
     @Override
-    public List<Item> getAll() {
-        return new ArrayList<>(items.values());
+    public List<Item> getAll(long user) {
+        return items.values().stream().filter(x -> x.getUser() == user).collect(Collectors.toList());
     }
 
     @Override
     public List<Item> search(String searchStr) {
         List<Item> itemList = new ArrayList<>();
         for (Item item : items.values()) {
-            if ((item.getName().toUpperCase(Locale.ROOT).contains(searchStr.toUpperCase(Locale.ROOT))
-                    || item.getDescription().toUpperCase(Locale.ROOT).contains(searchStr.toUpperCase(Locale.ROOT)))
-            && item.getAvailable()
-            && !searchStr.isBlank()
+            if ((item.getName().toUpperCase(Locale.ROOT)
+                    .contains(searchStr.toUpperCase(Locale.ROOT))
+                    ||
+                    item.getDescription().toUpperCase(Locale.ROOT)
+                            .contains(searchStr.toUpperCase(Locale.ROOT)))
+                    && item.getAvailable()
             ) {
                 itemList.add(item);
             }
@@ -50,8 +53,10 @@ public class InMemoryItemStorage implements ItemStorage {
         Item itemObj = items.get(item.getId());
         itemObj = Item.builder()
                 .id(item.getId())
-                .name(item.getName() != null ? item.getName() : itemObj.getName())
-                .description(item.getDescription() != null ? item.getDescription() : itemObj.getDescription())
+                .name(item.getName() != null && !item.getName().isBlank() ?
+                        item.getName() : itemObj.getName())
+                .description(item.getDescription() != null  && !item.getDescription().isBlank() ?
+                        item.getDescription() : itemObj.getDescription())
                 .available(item.getAvailable() != null ? item.getAvailable() : itemObj.getAvailable())
                 .user(item.getUser() != null ? item.getUser() : itemObj.getUser())
                 .build();

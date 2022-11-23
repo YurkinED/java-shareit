@@ -31,7 +31,8 @@ public class InMemoryUserStorage implements UserStorage {
             return false;
         }
         for (User userI : users.values()) {
-            if (userI.getEmail().toUpperCase(Locale.ROOT).equals(user.getEmail().toUpperCase(Locale.ROOT))
+            if (userI.getEmail().toUpperCase(Locale.ROOT)
+                    .equals(user.getEmail().toUpperCase(Locale.ROOT))
                     && userI.getId() != user.getId()) {
                 return true;
             }

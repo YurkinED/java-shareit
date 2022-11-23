@@ -11,8 +11,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -22,14 +22,7 @@ public class ItemService {
     private final UserService userService;
 
     public List<ItemDto> getAll(long user) {
-        List<ItemDto> list = new ArrayList<>();
-        for (Item x : itemStorage.getAll()) {
-            if (x.getUser() == user) {
-                ItemDto itemDto = MapToItem.toDto(x);
-                list.add(itemDto);
-            }
-        }
-        return list;
+        return itemStorage.getAll(user).stream().map(x -> MapToItem.toDto(x)).collect(Collectors.toList());
     }
 
     public ItemDto add(long user, ItemDto itemDto) {
@@ -41,7 +34,6 @@ public class ItemService {
     }
 
     public ItemDto update(long user, long itemId, ItemDto itemDto) {
-        System.out.println(itemDto);
         if (!itemStorage.isExistById(itemId)) {
             throw new ValidationException("Такой вещи не существует");
         }
@@ -64,11 +56,8 @@ public class ItemService {
     }
 
     public List<ItemDto> search(String searchText) {
-        List<ItemDto> list = new ArrayList<>();
-        for (Item x : itemStorage.search(searchText)) {
-                list.add(MapToItem.toDto(x));
-        }
-        return list;
+        return itemStorage.search(searchText).stream().map(x -> MapToItem.toDto(x)).collect(Collectors.toList());
+
     }
 
 }

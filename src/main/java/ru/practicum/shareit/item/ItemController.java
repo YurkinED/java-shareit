@@ -3,12 +3,12 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -29,13 +29,15 @@ public class ItemController {
     }
 
     @PostMapping("")
-    public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") long user, @Valid @RequestBody ItemDto item) {
+    public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") long user,
+                          @Valid @RequestBody ItemDto item) {
         log.info("Добавление вещей: {}", item);
         return itemService.add(user, item);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") long user, @PathVariable("itemId") long itemId, @RequestBody ItemDto item) {
+    public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") long user,
+                          @PathVariable("itemId") long itemId, @RequestBody ItemDto item) {
         log.info("Обновление вещей: {},{}, {}", user, itemId, item);
         return itemService.update(user, itemId, item);
     }
@@ -47,8 +49,12 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id") long user, @Validated @RequestParam(required = true) @NotEmpty String text) {
+    public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id") long user,
+                                @Valid @RequestParam @NotBlank String text) {
         log.info("Поиск вещей по фразе {}", text);
+        if (text.isBlank()) {
+            return Collections.emptyList();
+        }
         return itemService.search(text);
     }
 

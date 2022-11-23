@@ -7,7 +7,7 @@ import java.util.List;
 
 @Component
 public interface ItemStorage {
-    List<Item> getAll();
+    List<Item> getAll(long user);
 
     List<Item> search(String searchStr);
 
