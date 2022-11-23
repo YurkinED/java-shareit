@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public interface ItemStorage {
@@ -15,7 +16,7 @@ public interface ItemStorage {
 
     Item update(Item item);
 
-    Item get(long itemId);
+    Item get(Optional<Long> itemId);
 
     Boolean isExistById(long itemId);
 }

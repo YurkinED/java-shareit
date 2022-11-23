@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -48,7 +49,7 @@ public class UserService {
         if (!userStorage.isExistById(userId)) {
             throw new ValidationException("Такого пользователь не существует");
         }
-        return MapToUser.toDto(userStorage.get(userId));
+        return MapToUser.toDto(userStorage.get(Optional.of(userId)));
     }
 
     public boolean isExistById(long userId) {

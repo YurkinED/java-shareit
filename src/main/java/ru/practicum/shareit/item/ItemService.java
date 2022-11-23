@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -40,7 +41,7 @@ public class ItemService {
         if (!userService.isExistById(user)) {
             throw new NoUserException("Такого пользователь не существует");
         }
-        if (itemStorage.get(itemId).getUser() != user) {
+        if (itemStorage.get(Optional.of(itemId)).getUser() != user) {
             throw new NoItemUserException("Этот предмет принадлежит другому пользователю");
         }
         itemDto.setId(itemId);
@@ -52,7 +53,7 @@ public class ItemService {
         if (!itemStorage.isExistById(itemId)) {
             throw new ValidationException("Такой вещи не существует");
         }
-        return MapToItem.toDto(itemStorage.get(itemId));
+        return MapToItem.toDto(itemStorage.get(Optional.of(itemId)));
     }
 
     public List<ItemDto> search(String searchText) {
