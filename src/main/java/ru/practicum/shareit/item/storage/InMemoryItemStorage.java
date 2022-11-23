@@ -22,7 +22,11 @@ public class InMemoryItemStorage implements ItemStorage {
     public List<Item> search(String searchStr) {
         List<Item> itemList = new ArrayList<>();
         for (Item item : items.values()) {
-            if (item.getName().toUpperCase(Locale.ROOT).contains(searchStr.toUpperCase(Locale.ROOT)) || item.getDescription().toUpperCase(Locale.ROOT).contains(searchStr.toUpperCase(Locale.ROOT))) {
+            if ((item.getName().toUpperCase(Locale.ROOT).contains(searchStr.toUpperCase(Locale.ROOT))
+                    || item.getDescription().toUpperCase(Locale.ROOT).contains(searchStr.toUpperCase(Locale.ROOT)))
+            && item.getAvailable()
+            && !searchStr.isBlank()
+            ) {
                 itemList.add(item);
             }
         }
@@ -32,7 +36,6 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public Item add(Item item) {
         item.setId(++this.id);
-        System.out.println(item);
         items.put(item.getId(), item);
         return item;
     }

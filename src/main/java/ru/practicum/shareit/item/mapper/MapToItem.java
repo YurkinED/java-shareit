@@ -1,8 +1,12 @@
 package ru.practicum.shareit.item.mapper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapToItem {
     public static Item fromDto(ItemDto itemDto, long user) {
         Item item = Item.builder()

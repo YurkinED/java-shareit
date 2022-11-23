@@ -51,12 +51,8 @@ public class ItemService {
         if (itemStorage.get(itemId).getUser() != user) {
             throw new NoItemUserException("Этот предмет принадлежит другому пользователю");
         }
-        System.out.println(itemDto);
         itemDto.setId(itemId);
-        System.out.println(user);
         Item item = MapToItem.fromDto(itemDto, user);
-        System.out.println(item);
-
         return MapToItem.toDto(itemStorage.update(item));
     }
 
@@ -67,16 +63,10 @@ public class ItemService {
         return MapToItem.toDto(itemStorage.get(itemId));
     }
 
-    public List<ItemDto> search(Long user, String searchText) {
-        if (searchText == null || searchText.equals("")) {
-            return new ArrayList<>();
-        }
+    public List<ItemDto> search(String searchText) {
         List<ItemDto> list = new ArrayList<>();
         for (Item x : itemStorage.search(searchText)) {
-            if (x.getAvailable() == true) {
-                ItemDto itemDto = MapToItem.toDto(x);
-                list.add(itemDto);
-            }
+                list.add(MapToItem.toDto(x));
         }
         return list;
     }
