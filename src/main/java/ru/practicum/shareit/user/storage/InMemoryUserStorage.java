@@ -50,8 +50,8 @@ public class InMemoryUserStorage implements UserStorage {
         User userObj = users.get(user.getId());
         userObj = User.builder()
                 .id(user.getId())
-                .email(user.getEmail() != null ? user.getEmail() : userObj.getEmail())
-                .name(user.getName() != null ? user.getName() : userObj.getName())
+                .email(user.getEmail() != null && !user.getEmail().isBlank() ? user.getEmail() : userObj.getEmail())
+                .name(user.getName() != null && !user.getName().isBlank() ? user.getName() : userObj.getName())
                 .build();
         users.put(userObj.getId(), userObj);
         return userObj;
