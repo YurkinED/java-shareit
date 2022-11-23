@@ -57,7 +57,8 @@ public class ItemService {
     }
 
     public List<ItemDto> search(String searchText) {
-        return itemStorage.search(searchText).stream().map(x -> MapToItem.toDto(x)).collect(Collectors.toList());
+        return itemStorage.search(searchText).stream()
+                .map(x -> MapToItem.toDto(x)).collect(Collectors.toList());
 
     }
 
