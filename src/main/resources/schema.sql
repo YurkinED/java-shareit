@@ -1,4 +1,4 @@
-DROP SCHEMA shareit cascade;
+DROP SCHEMA IF EXISTS shareit cascade;
 
 CREATE SCHEMA IF NOT EXISTS  shareit;
 
