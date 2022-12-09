@@ -6,8 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestControllerAdvice
@@ -21,9 +25,25 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> noUserException(NoUserException ex) {
+    public ResponseEntity<Map<String, String>> validationException(final MethodArgumentTypeMismatchException ex) {
+        Map<String, String> map = new HashMap<>();
+        String message = "Unknown state: UNSUPPORTED_STATUS";
+        map.put("error", message);
+        return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<String> validationException(final NotAvaliableException ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<String> noUserException(NoUserException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
@@ -31,6 +51,13 @@ public class ErrorHandler {
         log.error(ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<String> noItemUserException(BookingExceptionNotFound ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 
     @ExceptionHandler
     public ResponseEntity<String> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -48,5 +75,30 @@ public class ErrorHandler {
     public ResponseEntity<String> throwable(Throwable ex) {
         log.error(ex.toString());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleNotFoundException(final NotFoundException e) {
+        log.warn("Исключение! NotFoundException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleEmailException(final EmailException e) {
+        log.warn("Исключение! EmailException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleBookingException(final BookingException e) {
+        log.warn("Исключение! BookingException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleEntityNotFoundException(final EntityNotFoundException e) {
+        log.warn("Исключение! EntityNotFoundException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

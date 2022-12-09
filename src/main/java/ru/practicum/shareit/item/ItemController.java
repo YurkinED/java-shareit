@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.ItemWithDateBooking;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -23,8 +25,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long user) {
-        log.info("Получение всех вещей");
+    public List<ItemWithDateBooking> getAll(@RequestHeader(value = "X-Sharer-User-Id") long user) {
+        log.info("Получение всех вещей {}",user);
         return itemService.getAll(user);
     }
 
@@ -43,9 +45,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@PathVariable("itemId") long itemId) {
-        log.info("Получение вещей по id: {}", itemId);
-        return itemService.get(itemId);
+    public ItemWithDateBooking get(@RequestHeader(value = "X-Sharer-User-Id") long user,@PathVariable("itemId") long itemId) {
+        log.info("Получение вещей по id: {}, {}", user, itemId);
+        return itemService.get(user, itemId);
     }
 
     @GetMapping("/search")
@@ -56,6 +58,12 @@ public class ItemController {
             return Collections.emptyList();
         }
         return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                                 @RequestBody @Valid CommentDto comment) {
+        return itemService.addComment(userId, itemId, comment);
     }
 
 

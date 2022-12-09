@@ -1,17 +1,21 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
+import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
 @Data
-@Builder(toBuilder = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+//@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "items", schema = "shareit")
+@NoArgsConstructor
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     String name;
     String description;
     Boolean available;
-    Long user;
+    @Column(name = "user_id")
+    long user;
 }
