@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query(value = "select * from shareit.users where email=:emailData", nativeQuery = true)
+    @Query(value = "select * from users where email=:emailData", nativeQuery = true)
     List<User> isExistByEmail(String emailData);
 }

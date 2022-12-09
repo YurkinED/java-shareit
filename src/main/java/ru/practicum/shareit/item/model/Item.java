@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 //@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "items", schema = "shareit")
+@Table(name = "items")
 @NoArgsConstructor
 public class Item {
     @Id

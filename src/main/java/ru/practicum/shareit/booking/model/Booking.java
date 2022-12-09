@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "bookings", schema = "shareit")
+@Table(name = "bookings")
 public class Booking {
 
     @Id
