@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentMapper;
@@ -18,6 +19,7 @@ import ru.practicum.shareit.item.model.ItemWithDateBooking;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,56 +53,55 @@ public class ItemService {
         Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
                 .stream()
                 .collect(groupingBy(Comment::getItem, toList()));
-        Map<Item, List<Booking>> bookings = bookingRepository.findByItemIn(items)
+        Map<Item, List<Booking>> bookings = bookingRepository.findByItemInAndStatusEquals(items, BookingStatus.APPROVED)
                 .stream()
                 .collect(groupingBy(Booking::getItem, toList()));
         for (Item item : items) {
             itemsWithDateBookingDto.add(MapToItem.itemToItemWithDateBookingDto(item,
                     bookings.get(item),
                     comments.get(item)
-                    ));
+            ));
         }
-
-
-
         return itemsWithDateBookingDto;
-
     }
 
     @Transactional
     public ItemDto add(long user, ItemDto itemDto) {
-        if (!userRepository.existsById(user)) {
-            throw new NoItemUserException("Такого пользователь не существует");
-        }
-        Item item = itemStorage.save(MapToItem.fromDto(itemDto, userRepository.findById(user).orElseThrow()));
+        Item item = itemStorage.save(MapToItem.fromDto(itemDto, userRepository.findById(user).orElseThrow(() -> {
+                    throw new ValidationException("Такого пользователь не существует");
+                })
+        ));
         return MapToItem.toDto(item);
     }
 
     @Transactional
     public ItemDto update(long user, long itemId, ItemDto itemDto) {
-        if (!userRepository.existsById(user)) {
+        if (itemStorage.findById(itemId).orElseThrow(() -> {
             throw new NoUserException("Такого пользователь не существует");
-        }
-        if (itemStorage.getById(itemId).getUser().getId() != user) {
+        }).getUser().getId() != user) {
             throw new NoItemUserException("Этот предмет принадлежит другому пользователю");
         }
 
         itemDto.setId(itemId);
-        Item updateItem = itemStorage.findById(itemId).orElseThrow();
-        if (itemDto.getName() != null && !updateItem.getName().equals(itemDto.getName()) && !itemDto.getName().isBlank()) {
+        Item updateItem = itemStorage.findById(itemId).orElseThrow(() -> {
+            throw new NoItemUserException("Такого пользователь не существует");
+        });
+        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
             updateItem.setName(itemDto.getName());
         }
-        if (!updateItem.getDescription().equals(itemDto.getDescription()) && itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
             updateItem.setDescription(itemDto.getDescription());
         }
-        if (updateItem.getAvailable() != itemDto.getAvailable() && itemDto.getAvailable() != null) {
+        if (itemDto.getAvailable() != null) {
             updateItem.setAvailable(itemDto.getAvailable());
         }
         return MapToItem.toDto(updateItem);
     }
 
     public ItemWithDateBooking get(long userId, long itemId) {
-        return MapToItem.itemToItemWithDateBookingDto(itemStorage.findById(itemId).orElseThrow(),
+        return MapToItem.itemToItemWithDateBookingDto(itemStorage.findById(itemId).orElseThrow(() -> {
+                    throw new NoItemUserException("Такого вещи не существует");
+                }),
                 bookingRepository.findAllByItem_IdAndItem_User_Id(itemId, userId),
                 commentRepository.findAllByItem_Id(itemId));
     }
@@ -113,20 +114,18 @@ public class ItemService {
 
     @Transactional
     public CommentDto addComment(long userId, long itemId, CommentDto comment) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("Пользователь не найден");
-        }
-        if (!itemStorage.existsById(itemId)) {
-            throw new NotFoundException("Вещь не найдена");
-        }
         if (bookingRepository.findAllByItem_IdAndBooker_IdAndEndIsBefore(itemId, userId, LocalDateTime.now())
                 .isEmpty()) {
             throw new BookingException("Вы не можете оставить отзыв на эту вещь");
         }
         comment.setCreated(LocalDateTime.now());
         return CommentMapper.commentToCommentDto(commentRepository.save(CommentMapper
-                .commentDtoToComment(itemStorage.findById(itemId).orElseThrow(),
-                        userRepository.findById(userId).orElseThrow(), comment)));
+                .commentDtoToComment(itemStorage.findById(itemId).orElseThrow(() -> {
+                            throw new NotFoundException("Вещь не найдена");
+                        }),
+                        userRepository.findById(userId).orElseThrow(() -> {
+                            throw new NotFoundException("Пользователь не найден");
+                        }), comment)));
     }
 
 

@@ -8,8 +8,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.MapToUser;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
-
-import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,28 +33,26 @@ public class UserService {
         User userUpdate = userStorage.findById(userId).orElseThrow();
         userDto.setId(userId);
         User user = MapToUser.fromDto(userDto);
-        if (!userUpdate.getName().equals(user.getName()) && user.getName() != null && !user.getName().isBlank()) {
+        if (user.getName() != null && !user.getName().isBlank()) {
             userUpdate.setName(user.getName());
         }
-        if (!userUpdate.getEmail().equals(user.getEmail()) && user.getEmail() != null && !user.getEmail().isBlank()) {
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
             userUpdate.setEmail(user.getEmail());
         }
         return MapToUser.toDto(userUpdate);
     }
 
     public UserDto get(long userId) {
-        if (!userStorage.existsById(userId)) {
+        return MapToUser.toDto(userStorage.findById(userId).orElseThrow(() -> {
             throw new NoUserException("Такого пользователь не существует");
-        }
-        return MapToUser.toDto(userStorage.findById(userId).orElseThrow());
+        }));
     }
 
     @Transactional
     public UserDto delete(long userId) {
-        if (!userStorage.existsById(userId)) {
-            throw new ValidationException("Такого пользователь не существует");
-        }
-        User user = userStorage.findById(userId).orElseThrow();
+        User user = userStorage.findById(userId).orElseThrow(() -> {
+            throw new NoUserException("Такого пользователь не существует");
+        });
         userStorage.deleteById(userId);
         return MapToUser.toDto(user);
     }

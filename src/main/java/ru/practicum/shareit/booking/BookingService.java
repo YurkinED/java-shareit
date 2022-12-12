@@ -11,10 +11,13 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -29,32 +32,44 @@ public class BookingService {
 
     @Transactional
     public BookingResponseDto add(long userId, BookingDto booking) {
-        if (!itemRepository.existsById(booking.getItemId())) {
+        if (!booking.getStart().isBefore(booking.getEnd())) {
+            throw new BookingException("Дата старта не может быть позже или равна окончанию");
+        }
+        Optional<Item> bookingList = Optional.ofNullable(itemRepository.findById(booking.getItemId()).orElseThrow(() -> {
+            throw new BookingExceptionNotFound("Бронирование не найдено");
+        }));
+
+
+        if (!bookingList.isPresent()) {
             throw new BookingExceptionNotFound("Бронорование не доступно");
+        }
+        if (!bookingList.get().getAvailable()) {
+            throw new NotAvaliableException("Вещь не доступна");
         }
         if (!userRepository.existsById(userId) || userId == 0) {
             throw new NoUserException("Пользователь не найден");
         }
-        if (!itemRepository.existsById(booking.getItemId()) ||
-                itemRepository.findById(booking.getItemId()).orElseThrow().getUser().getId() == userId) {
+        if (bookingList.get().getUser().getId() == userId) {
             throw new NoItemUserException("Вещь не найдена");
         }
-        if (!itemRepository.findById(booking.getItemId()).orElseThrow().getAvailable()) {
-            throw new NotAvaliableException("Вещь не доступна");
-        }
-        if (booking.getEnd().isBefore(booking.getStart()) || booking.getEnd().isEqual(booking.getStart())) {
-            throw new BookingException("Дата старта не может быть позже или равна окончанию");
-        }
         return BookingMapper.bookingToBookingResponseDto(bookingRepository.save(BookingMapper.bookingDtoToBooking(booking,
-                itemRepository.findById(booking.getItemId()).orElseThrow(), userRepository.getById(userId))));
+                itemRepository.findById(booking.getItemId()).orElseThrow(() -> {
+                    throw new NoItemUserException("Вещь не найдена");
+                }), userRepository.findById(userId).orElseThrow(() -> {
+                    throw new NoUserException("Пользователь не найден");
+                }))));
     }
 
     public BookingResponseDto getByAuthorOrOwner(long authorId, long bookingId) {
         if (!userRepository.existsById(authorId)) {
             throw new NotFoundException("Такого пользователя не существует");
         }
-        if (authorId != bookingRepository.findById(bookingId).orElseThrow().getItem().getUser().getId()
-                && authorId != bookingRepository.findById(bookingId).orElseThrow().getBooker().getId()) {
+        if (authorId != bookingRepository.findById(bookingId).orElseThrow(() -> {
+            throw new BookingExceptionNotFound("Бронивароние не найдено");
+        }).getItem().getUser().getId()
+                && authorId != bookingRepository.findById(bookingId).orElseThrow(() -> {
+            throw new BookingExceptionNotFound("Бронивароние не найдено");
+        }).getBooker().getId()) {
             throw new NotFoundException("В доступе отказано");
         }
         return BookingMapper.bookingToBookingResponseDto(bookingRepository.getById(bookingId));
@@ -97,7 +112,7 @@ public class BookingService {
         switch (state) {
             case ALL:
                 return BookingMapper.bookingsToBookingResponseDtoList(bookingRepository
-                        .findAllByItem_UserId(ownerId,Sort.by(Sort.Direction.DESC, "start")));
+                        .findAllByItem_UserId(ownerId, Sort.by(Sort.Direction.DESC, "start")));
             case CURRENT:
                 return BookingMapper.bookingsToBookingResponseDtoList(bookingRepository
                         .findAllByItem_UserIdAndStartIsBeforeAndEndIsAfter(ownerId, dateTime, dateTime, sortStartDesc));
