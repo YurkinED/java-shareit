@@ -41,28 +41,39 @@ public class MapToItem {
 
     public static ItemWithDateBooking itemToItemWithDateBookingDto(Item item, List<Booking> bookingList,
                                                                    List<Comment> comments) {
-        Optional<Booking> last = bookingList.stream().filter(booking -> booking.getEnd()
-                .isBefore(LocalDateTime.now())).findFirst();
-        Optional<Booking> next = bookingList.stream().filter(booking -> booking.getStart()
-                .isAfter(LocalDateTime.now())).findFirst();
         ItemWithDateBooking itemWithDateBookingDto = new ItemWithDateBooking();
-        if (last.isEmpty()) {
+        if (bookingList == null) {
+            itemWithDateBookingDto.setNextBooking(null);
             itemWithDateBookingDto.setLastBooking(null);
         } else {
-            itemWithDateBookingDto.setLastBooking(new ItemWithDateBooking.Booking(last.get().getId(),
-                    last.get().getBooker().getId()));
-        }
-        if (next.isEmpty()) {
-            itemWithDateBookingDto.setNextBooking(null);
-        } else {
-            itemWithDateBookingDto.setNextBooking(new ItemWithDateBooking.Booking(next.get().getId(),
-                    next.get().getBooker().getId()));
+
+            Optional<Booking> last = bookingList.stream().filter(booking -> booking.getEnd()
+                    .isBefore(LocalDateTime.now())).findFirst();
+            Optional<Booking> next = bookingList.stream().filter(booking -> booking.getStart()
+                    .isAfter(LocalDateTime.now())).findFirst();
+
+            if (last.isEmpty()) {
+                itemWithDateBookingDto.setLastBooking(null);
+            } else {
+                itemWithDateBookingDto.setLastBooking(new ItemWithDateBooking.Booking(last.get().getId(),
+                        last.get().getBooker().getId()));
+            }
+            if (next.isEmpty()) {
+                itemWithDateBookingDto.setNextBooking(null);
+            } else {
+                itemWithDateBookingDto.setNextBooking(new ItemWithDateBooking.Booking(next.get().getId(),
+                        next.get().getBooker().getId()));
+            }
         }
         itemWithDateBookingDto.setAvailable(item.getAvailable());
         itemWithDateBookingDto.setDescription(item.getDescription());
         itemWithDateBookingDto.setName(item.getName());
         itemWithDateBookingDto.setId(item.getId());
-        itemWithDateBookingDto.setComments(commentsToItemWithDateBookingComments(comments));
+        if (comments == null) {
+            itemWithDateBookingDto.setComments(null);
+        } else {
+            itemWithDateBookingDto.setComments(commentsToItemWithDateBookingComments(comments));
+        }
         return itemWithDateBookingDto;
     }
 

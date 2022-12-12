@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentMapper;
@@ -50,11 +51,14 @@ public class ItemService {
         Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
                 .stream()
                 .collect(groupingBy(Comment::getItem, toList()));
-        System.out.println(comments);
+        Map<Item, List<Booking>> bookings = bookingRepository.findByItemIn(items)
+                .stream()
+                .collect(groupingBy(Booking::getItem, toList()));
         for (Item item : items) {
             itemsWithDateBookingDto.add(MapToItem.itemToItemWithDateBookingDto(item,
-                    bookingRepository.findAllByItem_IdAndItem_User_Id(item.getId(), item.getUser().getId()),
-                    commentRepository.findAllByItem_Id(item.getId())));
+                    bookings.get(item),
+                    comments.get(item)
+                    ));
         }
 
 

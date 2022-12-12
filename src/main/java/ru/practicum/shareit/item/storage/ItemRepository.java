@@ -12,6 +12,4 @@ public interface ItemRepository  extends JpaRepository<Item, Long> {
 
     @Query(value = "select * from items where available = true and (upper(name) like upper(:str) or upper(description) like upper(:str))", nativeQuery = true)
     List<Item> search(String str);
-
-    List<Item> findAllByUser(long userId);
 }
