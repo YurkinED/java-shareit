@@ -42,11 +42,6 @@ public class MapToItem {
     public static ItemWithDateBooking itemToItemWithDateBookingDto(Item item, List<Booking> bookingList,
                                                                    List<Comment> comments) {
         ItemWithDateBooking itemWithDateBookingDto = new ItemWithDateBooking();
-        if (bookingList == null) {
-            itemWithDateBookingDto.setNextBooking(null);
-            itemWithDateBookingDto.setLastBooking(null);
-        } else {
-
             Optional<Booking> last = bookingList.stream().filter(booking -> booking.getEnd()
                     .isBefore(LocalDateTime.now())).findFirst();
             Optional<Booking> next = bookingList.stream().filter(booking -> booking.getStart()
@@ -64,16 +59,12 @@ public class MapToItem {
                 itemWithDateBookingDto.setNextBooking(new ItemWithDateBooking.Booking(next.get().getId(),
                         next.get().getBooker().getId()));
             }
-        }
         itemWithDateBookingDto.setAvailable(item.getAvailable());
         itemWithDateBookingDto.setDescription(item.getDescription());
         itemWithDateBookingDto.setName(item.getName());
         itemWithDateBookingDto.setId(item.getId());
-        if (comments == null) {
-            itemWithDateBookingDto.setComments(null);
-        } else {
-            itemWithDateBookingDto.setComments(commentsToItemWithDateBookingComments(comments));
-        }
+        itemWithDateBookingDto.setComments(commentsToItemWithDateBookingComments(comments));
+
         return itemWithDateBookingDto;
     }
 

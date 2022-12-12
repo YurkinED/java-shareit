@@ -22,6 +22,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,8 @@ public class ItemService {
                 .collect(groupingBy(Booking::getItem, toList()));
         for (Item item : items) {
             itemsWithDateBookingDto.add(MapToItem.itemToItemWithDateBookingDto(item,
-                    bookings.get(item),
-                    comments.get(item)
+                    bookings.getOrDefault(item, Collections.emptyList()),
+                    comments.getOrDefault(item, Collections.emptyList())
             ));
         }
         return itemsWithDateBookingDto;
