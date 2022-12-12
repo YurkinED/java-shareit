@@ -23,9 +23,7 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-
     private final ItemRepository itemRepository;
-
     private final UserRepository userRepository;
     private final Sort sortStartDesc = Sort.by(Sort.Direction.DESC, "start");
 
