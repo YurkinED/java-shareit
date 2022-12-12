@@ -8,8 +8,7 @@ import java.util.List;
 
 public interface ItemRepository  extends JpaRepository<Item, Long> {
 
-    @Query(value = "select * from items where user_id= :userData", nativeQuery = true)
-    List<Item> getAllByUser(Long userData);
+    List<Item> findAllByUserId(long userId);
 
     @Query(value = "select * from items where available = true and (upper(name) like upper(:str) or upper(description) like upper(:str))", nativeQuery = true)
     List<Item> search(String str);

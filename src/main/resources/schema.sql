@@ -12,9 +12,8 @@ CREATE TABLE IF NOT EXISTS items (
     name varchar(50),
     description varchar(50),
     available boolean,
-    user_id BIGINT,
-    CONSTRAINT pk_items PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    user_id BIGINT REFERENCES users(id),
+    CONSTRAINT pk_items PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS bookings

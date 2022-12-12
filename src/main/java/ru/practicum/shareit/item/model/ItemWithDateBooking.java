@@ -8,17 +8,11 @@ import java.util.List;
 @Data
 public class ItemWithDateBooking {
     private long id;
-
     private String name;
-
     private String description;
-
     private Boolean available;
-
     private Booking lastBooking;
-
     private Booking nextBooking;
-
     private List<Comment> comments;
 
     @Data

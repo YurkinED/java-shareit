@@ -12,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 
 @RestControllerAdvice
@@ -26,6 +27,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> validationException(final MethodArgumentTypeMismatchException ex) {
+        log.error(ex.toString());
         Map<String, String> map = new HashMap<>();
         String message = "Unknown state: UNSUPPORTED_STATUS";
         map.put("error", message);
@@ -53,7 +55,13 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> noItemUserException(BookingExceptionNotFound ex) {
+    public ResponseEntity<String> noItemUserException(NoSuchElementException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> noItemException(BookingExceptionNotFound ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }

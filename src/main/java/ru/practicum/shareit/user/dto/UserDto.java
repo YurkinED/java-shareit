@@ -16,10 +16,10 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Validated
 public class UserDto {
-    long id;
+    private long id;
     @NotBlank(groups = Create.class)
-    String name;
+    private String name;
     @Email(groups = {Create.class, Update.class})
     @NotBlank(groups = Create.class)
-    String email;
+    private String email;
 }

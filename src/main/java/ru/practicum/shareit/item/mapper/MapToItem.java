@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemWithDateBooking;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapToItem {
-    public static Item fromDto(ItemDto itemDto, long user) {
+    public static Item fromDto(ItemDto itemDto, User user) {
         Item item = new Item();
         item.setId(itemDto.getId());
         item.setName(itemDto.getName());
@@ -73,4 +74,5 @@ public class MapToItem {
     private static List<ItemWithDateBooking.Comment> commentsToItemWithDateBookingComments(List<Comment> comments) {
         return comments.stream().map(MapToItem::commentToItemWithDateBookingComment).collect(Collectors.toList());
     }
+
 }

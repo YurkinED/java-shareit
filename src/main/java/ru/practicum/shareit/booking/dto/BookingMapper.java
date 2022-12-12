@@ -2,25 +2,21 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * TODO Sprint add-bookings.
- */
 @UtilityClass
 public class BookingMapper {
 
     public static BookingDto bookingToBookingDto(Booking booking) {
         BookingDto bookingDto = new BookingDto();
-        bookingDto.setId(booking.getId());
         bookingDto.setItemId(booking.getItem().getId());
         bookingDto.setStart(booking.getStart());
         bookingDto.setEnd(booking.getEnd());
-        bookingDto.setBookerId(booking.getBooker().getId());
         return bookingDto;
     }
 
@@ -34,7 +30,7 @@ public class BookingMapper {
         booking.setStart(bookingDto.getStart());
         booking.setItem(item);
         booking.setBooker(user);
-        booking.setStatus("WAITING");
+        booking.setStatus(BookingStatus.WAITING);
         return booking;
     }
 
