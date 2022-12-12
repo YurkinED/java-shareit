@@ -1,10 +1,12 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -18,7 +20,11 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 
 @Service
@@ -40,16 +46,19 @@ public class ItemService {
 
         List<Item> items = itemStorage.findAllByUserId(user);
         List<ItemWithDateBooking> itemsWithDateBookingDto = new ArrayList<>();
+
+        Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
+                .stream()
+                .collect(groupingBy(Comment::getItem, toList()));
+        System.out.println(comments);
         for (Item item : items) {
             itemsWithDateBookingDto.add(MapToItem.itemToItemWithDateBookingDto(item,
                     bookingRepository.findAllByItem_IdAndItem_User_Id(item.getId(), item.getUser().getId()),
                     commentRepository.findAllByItem_Id(item.getId())));
         }
 
-      /*  Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
-                .stream()
-                .collect(groupingBy(Comment::getItem, toList()));
-*/
+
+
         return itemsWithDateBookingDto;
 
     }
