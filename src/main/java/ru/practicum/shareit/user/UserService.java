@@ -3,7 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exceptions.NoUserException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.MapToUser;
 import ru.practicum.shareit.user.model.User;
@@ -19,7 +19,7 @@ public class UserService {
     private final UserRepository userStorage;
 
     public List<UserDto> getAll() {
-        return userStorage.findAll().stream().map(x -> MapToUser.toDto(x)).collect(Collectors.toList());
+        return userStorage.findAll().stream().map(MapToUser::toDto).collect(Collectors.toList());
     }
 
     @Transactional
@@ -31,7 +31,7 @@ public class UserService {
     @Transactional
     public UserDto update(Long userId, UserDto userDto) {
         User userUpdate = userStorage.findById(userId).orElseThrow(() -> {
-            throw new NoUserException("Такого пользователь не существует");
+            throw new NotFoundException("Такого пользователь не существует");
         });
         userDto.setId(userId);
         User user = MapToUser.fromDto(userDto);
@@ -46,14 +46,14 @@ public class UserService {
 
     public UserDto get(long userId) {
         return MapToUser.toDto(userStorage.findById(userId).orElseThrow(() -> {
-            throw new NoUserException("Такого пользователь не существует");
+            throw new NotFoundException("Такого пользователь не существует");
         }));
     }
 
     @Transactional
     public UserDto delete(long userId) {
         User user = userStorage.findById(userId).orElseThrow(() -> {
-            throw new NoUserException("Такого пользователь не существует");
+            throw new NotFoundException("Такого пользователь не существует");
         });
         userStorage.deleteById(userId);
         return MapToUser.toDto(user);

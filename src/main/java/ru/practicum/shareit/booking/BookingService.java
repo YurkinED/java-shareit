@@ -13,12 +13,11 @@ import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -35,42 +34,30 @@ public class BookingService {
         if (!booking.getStart().isBefore(booking.getEnd())) {
             throw new BookingException("Дата старта не может быть позже или равна окончанию");
         }
-        Optional<Item> bookingList = Optional.ofNullable(itemRepository.findById(booking.getItemId()).orElseThrow(() -> {
-            throw new BookingExceptionNotFound("Бронирование не найдено");
-        }));
-        if (!bookingList.isPresent()) {
-            throw new BookingExceptionNotFound("Бронорование не доступно");
-        }
-        if (!bookingList.get().getAvailable()) {
+        Item item = itemRepository.findById(booking.getItemId()).orElseThrow(() -> {
+            throw new NotFoundException("Бронирование не найдено");
+        });
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new NotFoundException("Пользователь не найден");
+        });
+        if (!item.getAvailable()) {
             throw new NotAvaliableException("Вещь не доступна");
         }
-        if (!userRepository.existsById(userId) || userId == 0) {
-            throw new NoUserException("Пользователь не найден");
+        if (item.getUser().getId() == userId) {
+            throw new NotFoundException("Вещь не найдена");
         }
-        if (bookingList.get().getUser().getId() == userId) {
-            throw new NoItemUserException("Вещь не найдена");
-        }
-        return BookingMapper.bookingToBookingResponseDto(bookingRepository.save(BookingMapper.bookingDtoToBooking(booking,
-                itemRepository.findById(booking.getItemId()).orElseThrow(() -> {
-                    throw new NoItemUserException("Вещь не найдена");
-                }), userRepository.findById(userId).orElseThrow(() -> {
-                    throw new NoUserException("Пользователь не найден");
-                }))));
+        return BookingMapper.bookingToBookingResponseDto(
+                bookingRepository.save(BookingMapper.bookingDtoToBooking(booking, item, user)));
     }
 
     public BookingResponseDto getByAuthorOrOwner(long authorId, long bookingId) {
-        if (!userRepository.existsById(authorId)) {
-            throw new NotFoundException("Такого пользователя не существует");
-        }
-        if (authorId != bookingRepository.findById(bookingId).orElseThrow(() -> {
-            throw new BookingExceptionNotFound("Бронивароние не найдено");
-        }).getItem().getUser().getId()
-                && authorId != bookingRepository.findById(bookingId).orElseThrow(() -> {
-            throw new BookingExceptionNotFound("Бронивароние не найдено");
-        }).getBooker().getId()) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> {
+            throw new NotFoundException("Бронивароние не найдено");
+        });
+        if (authorId != booking.getItem().getUser().getId() && authorId != booking.getBooker().getId()) {
             throw new NotFoundException("В доступе отказано");
         }
-        return BookingMapper.bookingToBookingResponseDto(bookingRepository.getById(bookingId));
+        return BookingMapper.bookingToBookingResponseDto(booking);
     }
 
     public List<BookingResponseDto> getSort(long authorId, State state) {

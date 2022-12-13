@@ -77,16 +77,14 @@ public class ItemService {
 
     @Transactional
     public ItemDto update(long user, long itemId, ItemDto itemDto) {
-        if (itemStorage.findById(itemId).orElseThrow(() -> {
-            throw new NoUserException("Такого пользователь не существует");
-        }).getUser().getId() != user) {
-            throw new NoItemUserException("Этот предмет принадлежит другому пользователю");
+        Item updateItem = itemStorage.findById(itemId).orElseThrow(() -> {
+            throw new NotFoundException("Такого предмета не найдено");
+        });
+        if (updateItem.getUser().getId() != user) {
+            throw new NotFoundException("Этот предмет принадлежит другому пользователю");
         }
 
         itemDto.setId(itemId);
-        Item updateItem = itemStorage.findById(itemId).orElseThrow(() -> {
-            throw new NoItemUserException("Такого пользователь не существует");
-        });
         if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
             updateItem.setName(itemDto.getName());
         }
@@ -101,7 +99,7 @@ public class ItemService {
 
     public ItemWithDateBooking get(long userId, long itemId) {
         return MapToItem.itemToItemWithDateBookingDto(itemStorage.findById(itemId).orElseThrow(() -> {
-                    throw new NoItemUserException("Такого вещи не существует");
+                    throw new NotFoundException("Такого вещи не существует");
                 }),
                 bookingRepository.findAllByItem_IdAndItem_User_Id(itemId, userId),
                 commentRepository.findAllByItem_Id(itemId));

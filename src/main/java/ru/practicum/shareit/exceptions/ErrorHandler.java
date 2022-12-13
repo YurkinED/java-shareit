@@ -43,13 +43,7 @@ public class ErrorHandler {
 
 
     @ExceptionHandler
-    public ResponseEntity<String> noUserException(NoUserException ex) {
-        log.error(ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<String> noItemUserException(NoItemUserException ex) {
+    public ResponseEntity<String> noUserException(NotFoundException ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
@@ -60,14 +54,7 @@ public class ErrorHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<String> noItemException(BookingExceptionNotFound ex) {
-        log.error(ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-
-    @ExceptionHandler
+     @ExceptionHandler
     public ResponseEntity<String> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -83,13 +70,6 @@ public class ErrorHandler {
     public ResponseEntity<String> throwable(Throwable ex) {
         log.error(ex.toString());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-
-    @ExceptionHandler
-    public ResponseEntity<String> handleNotFoundException(final NotFoundException e) {
-        log.warn("Исключение! NotFoundException: {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
