@@ -38,8 +38,6 @@ public class BookingService {
         Optional<Item> bookingList = Optional.ofNullable(itemRepository.findById(booking.getItemId()).orElseThrow(() -> {
             throw new BookingExceptionNotFound("Бронирование не найдено");
         }));
-
-
         if (!bookingList.isPresent()) {
             throw new BookingExceptionNotFound("Бронорование не доступно");
         }

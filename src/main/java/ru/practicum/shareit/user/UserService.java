@@ -30,7 +30,9 @@ public class UserService {
 
     @Transactional
     public UserDto update(Long userId, UserDto userDto) {
-        User userUpdate = userStorage.findById(userId).orElseThrow();
+        User userUpdate = userStorage.findById(userId).orElseThrow(() -> {
+            throw new NoUserException("Такого пользователь не существует");
+        });
         userDto.setId(userId);
         User user = MapToUser.fromDto(userDto);
         if (user.getName() != null && !user.getName().isBlank()) {
