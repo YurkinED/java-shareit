@@ -8,10 +8,12 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.State;
 
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 public class BookingController {
@@ -27,25 +29,32 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingResponseDto patch(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long bookingId,
                                     @RequestParam Boolean approved) {
+        log.info("Изменение бронирования {},{}",userId, bookingId);
         return bookingService.updateStatus(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingResponseDto getById(@RequestHeader("X-Sharer-User-Id") long userId,
                                       @PathVariable long bookingId) {
+        log.info("Получение бронирования {},{}",userId, bookingId);
         return bookingService.getByAuthorOrOwner(userId, bookingId);
     }
 
     @GetMapping
     public List<BookingResponseDto> getListByUser(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                  @RequestParam(defaultValue = "ALL") State state) {
-        log.info("Получение по  ID {},{}",userId, state);
-        return bookingService.getSort(userId, state);
+                                                  @RequestParam(defaultValue = "ALL") State state,
+                                                  @RequestParam(value = "from", required = false) @PositiveOrZero Integer from,
+                                                  @RequestParam(value = "size", required = false) @PositiveOrZero Integer size) {
+        log.info("Получение по  ID пользователя {},{}",userId, state);
+        return bookingService.getSort(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingResponseDto> getListByItemOwner(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                                       @RequestParam(defaultValue = "ALL") State state) {
-        return bookingService.getByItemOwner(ownerId, state);
+                                                       @RequestParam(defaultValue = "ALL") State state,
+                                                       @RequestParam(value = "from", required = false) @PositiveOrZero Integer from,
+                                                       @RequestParam(value = "size", required = false) @PositiveOrZero Integer size) {
+        log.info("Получение по владельцу {},{}, {}, {}",ownerId, state, from, size);
+        return bookingService.getByItemOwner(ownerId, state, from, size);
     }
 }

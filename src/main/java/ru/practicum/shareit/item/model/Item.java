@@ -22,4 +22,5 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    private Long requestId;
 }

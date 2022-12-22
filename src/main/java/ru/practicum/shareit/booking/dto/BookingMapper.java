@@ -20,10 +20,6 @@ public class BookingMapper {
         return bookingDto;
     }
 
-    public static List<BookingDto> bookingsToBookingDtoList(List<Booking> bookingList) {
-        return bookingList.stream().map(BookingMapper::bookingToBookingDto).collect(Collectors.toList());
-    }
-
     public static Booking bookingDtoToBooking(BookingDto bookingDto, Item item, User user) {
         Booking booking = new Booking();
         booking.setEnd(bookingDto.getEnd());
@@ -36,10 +32,14 @@ public class BookingMapper {
 
     public static BookingResponseDto bookingToBookingResponseDto(Booking booking) {
         BookingResponseDto bookingDto = new BookingResponseDto();
-        bookingDto.setId(booking.getId());
+        if (booking.getId() != null) {
+            bookingDto.setId(booking.getId());
+        }
         bookingDto.setStart(booking.getStart());
         bookingDto.setEnd(booking.getEnd());
-        bookingDto.setBooker(new BookingResponseDto.User(booking.getBooker().getId(), booking.getBooker().getName()));
+        if (booking.getBooker() != null) {
+            bookingDto.setBooker(new BookingResponseDto.User(booking.getBooker().getId(), booking.getBooker().getName()));
+        }
         bookingDto.setItem(new BookingResponseDto.Item(booking.getItem().getId(), booking.getItem().getName()));
         bookingDto.setStatus(booking.getStatus());
         return bookingDto;

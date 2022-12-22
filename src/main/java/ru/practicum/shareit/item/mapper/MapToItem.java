@@ -24,6 +24,7 @@ public class MapToItem {
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
         item.setUser(user);
+        item.setRequestId(itemDto.getRequestId());
 
         return item;
     }
@@ -34,6 +35,7 @@ public class MapToItem {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
 
         return itemDto;

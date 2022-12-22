@@ -17,4 +17,15 @@ public class User {
     private String name;
     @Column(unique = true)
     private String email;
+
+
+    public User(long id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    public User() {
+
+    }
 }

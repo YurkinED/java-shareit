@@ -20,14 +20,8 @@ import java.util.NoSuchElementException;
 public class ErrorHandler {
 
     @ExceptionHandler
-    public ResponseEntity<String> validationException(final ValidationException ex) {
-        log.error(ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler
     public ResponseEntity<Map<String, String>> validationException(final MethodArgumentTypeMismatchException ex) {
-        log.error(ex.toString());
+        log.error("MethodArgumentTypeMismatchException " + ex.toString());
         Map<String, String> map = new HashMap<>();
         String message = "Unknown state: UNSUPPORTED_STATUS";
         map.put("error", message);
@@ -36,57 +30,52 @@ public class ErrorHandler {
 
 
     @ExceptionHandler
-    public ResponseEntity<String> validationException(final NotAvaliableException ex) {
-        log.error(ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-
-    @ExceptionHandler
     public ResponseEntity<String> noUserException(NotFoundException ex) {
-        log.error(ex.getMessage());
+        log.error("NotFoundException" + ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> noItemUserException(NoSuchElementException ex) {
-        log.error(ex.getMessage());
+        log.error("noItemUserException" + ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-     @ExceptionHandler
+    @ExceptionHandler
     public ResponseEntity<String> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error(ex.getMessage());
+        log.error("methodArgumentNotValidException " + ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> constraintViolationException(ConstraintViolationException ex) {
-        log.error(ex.getMessage());
+        log.error("constraintViolationException " + ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> throwable(Throwable ex) {
-        log.error(ex.toString());
+        log.error("throwable " + ex.toString());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> handleEmailException(final EmailException e) {
-        log.warn("Исключение! EmailException: {}", e.getMessage());
+        log.error("Исключение! EmailException: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> handleBookingException(final BookingException e) {
-        log.warn("Исключение! BookingException: {}", e.getMessage());
+        log.error("Исключение! BookingException: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> handleEntityNotFoundException(final EntityNotFoundException e) {
-        log.warn("Исключение! EntityNotFoundException: {}", e.getMessage());
+        log.error("Исключение! EntityNotFoundException: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+
 }

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -65,6 +66,7 @@ public class ItemService {
         }
         return itemsWithDateBookingDto;
     }
+
 
     @Transactional
     public ItemDto add(long user, ItemDto itemDto) {
@@ -125,6 +127,12 @@ public class ItemService {
                         userRepository.findById(userId).orElseThrow(() -> {
                             throw new NotFoundException("Пользователь не найден");
                         }), comment)));
+    }
+
+    public List<ItemDto> findItemByRequestId(long requestId) {
+        return itemStorage.findItemByRequestId(requestId).stream()
+                .map(MapToItem::toDto)
+                .collect(Collectors.toList());
     }
 
 
