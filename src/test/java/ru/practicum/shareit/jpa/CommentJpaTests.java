@@ -26,7 +26,6 @@ public class CommentJpaTests {
     @Autowired
     private CommentRepository commentRepository;
 
-
     @Test
     void findAllByItem_IdTest() {
         var user = new User(0, "testUserName", "testUser@email.com");

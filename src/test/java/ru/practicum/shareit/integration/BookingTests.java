@@ -220,8 +220,6 @@ class BookingTests {
         comment.setCreated(LocalDateTime.now());
         comment.setText("text");
         comment.setAuthor(user);
-
-
     }
 
     @Test
@@ -402,8 +400,6 @@ class BookingTests {
                         .usingRecursiveComparison()
                         .ignoringFields("id", "booker")
                         .isEqualTo(responseBooking));
-
-
     }
 
 
@@ -461,16 +457,10 @@ class BookingTests {
         em.persist(booking);
         em.flush();
         BookingResponseDto bookingResponseDto = BookingMapper.bookingToBookingResponseDto(booking);
-        var responseBooking = List.of(bookingResponseDto);
-
-
-        var targetItem =
-
-
-                assertThatThrownBy(() -> {
-                    bookingService.getSort(user.getId(), State.valueOf("ERROR"), null, null);
-                }).isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining("No enum constant ru.practicum.shareit.booking.model.State.ERROR");
+        assertThatThrownBy(() -> {
+            bookingService.getSort(user.getId(), State.valueOf("ERROR"), null, null);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("No enum constant ru.practicum.shareit.booking.model.State.ERROR");
     }
 
 
@@ -498,9 +488,6 @@ class BookingTests {
         em.flush();
 
         BookingResponseDto bookingResponseDto = BookingMapper.bookingToBookingResponseDto(booking);
-        var responseBooking = List.of(bookingResponseDto);
-
-
         assertThatThrownBy(() -> {
             bookingService.getByItemOwner(1000L, State.ALL, null, null);
         }).isInstanceOf(NotFoundException.class)
@@ -533,9 +520,6 @@ class BookingTests {
 
         BookingResponseDto bookingResponseDto = BookingMapper.bookingToBookingResponseDto(booking);
         bookingResponseDto.setStatus(BookingStatus.APPROVED);
-        var responseBooking = bookingResponseDto;
-
-
         assertThatThrownBy(() -> {
             bookingService.updateStatus(user2.getId(), booking.getId(), true);
         }).isInstanceOf(NotFoundException.class)

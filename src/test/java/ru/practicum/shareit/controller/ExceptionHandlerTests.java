@@ -142,24 +142,6 @@ class ExceptionHandlerTests {
                 .andReturn().getResponse();
     }
 
-    /*
-      @Test
-      void validationExceptionTest() throws Exception {
-        when(bookingService.add(anyLong(), any()))
-                .thenThrow(new ValidationException("Вещь не доступна"));
-        BookingDto bookingDto;
-        bookingDto = new BookingDto();
-        bookingDto.setStart(LocalDateTime.now().plusHours(1).truncatedTo(ChronoUnit.SECONDS));
-        bookingDto.setEnd(LocalDateTime.now().plusHours(5).truncatedTo(ChronoUnit.SECONDS));
-        var response = mvc.perform(post("/booking")
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andReturn().getResponse();
-      }
-    */
     @Test
     void unsupportedStatusTest() throws Exception {
         var response = mvc.perform(get("/bookings")

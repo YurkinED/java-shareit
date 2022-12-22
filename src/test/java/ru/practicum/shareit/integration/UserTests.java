@@ -32,7 +32,6 @@ class UserTests {
             .isEqualTo(userDto));
   }
 
-
   @Test
   void updateUserTest() {
     var user = new User(0, "authorName", "mail@mail.com");

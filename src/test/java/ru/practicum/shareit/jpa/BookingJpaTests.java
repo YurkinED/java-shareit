@@ -260,9 +260,7 @@ class BookingJpaTests {
         em.persist(item2);
         em.persist(booking);
         em.persist(booking2);
-
         var bookings = bookingRepository.findAllByItem_UserIdAndStatusEquals(user.getId(), BookingStatus.WAITING, Pageable.unpaged());
-
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(bookings.size())
                     .usingRecursiveComparison()

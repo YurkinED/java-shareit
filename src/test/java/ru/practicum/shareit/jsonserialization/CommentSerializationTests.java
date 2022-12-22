@@ -47,7 +47,6 @@ public class CommentSerializationTests {
         JsonContent<Comment> json = jacksonTester.write(comment);
         SoftAssertions.assertSoftly(softAssertions -> {
             assertThat(json).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-            // assertThat(json).extractingJsonPathStringValue("$.created").isEqualTo(localDate.toString());
             assertThat(json).extractingJsonPathStringValue("$.text").isEqualTo("text");
         });
     }
@@ -59,7 +58,6 @@ public class CommentSerializationTests {
         JsonContent<CommentDto> json = jacksonTester2.write(commentDto);
         SoftAssertions.assertSoftly(softAssertions -> {
             assertThat(json).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-            // assertThat(json).extractingJsonPathStringValue("$.created").isEqualTo(localDate.toString());
             assertThat(json).extractingJsonPathStringValue("$.text").isEqualTo("text");
         });
     }

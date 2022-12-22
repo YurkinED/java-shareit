@@ -75,8 +75,6 @@ class ItemSerializationTests {
             assertThat(json).extractingJsonPathStringValue("$.name").isEqualTo("itemName");
             assertThat(json).extractingJsonPathBooleanValue("$.available").isEqualTo(true);
             assertThat(json).extractingJsonPathStringValue("$.description").isEqualTo("itemDescription");
-            //  assertThat(json).extractingJsonPathNumberValue("$.comments.id").isEqualTo(1);
-            //  assertThat(json).extractingJsonPathStringValue("$.comments.text").isEqualTo("text");
         });
     }
 
