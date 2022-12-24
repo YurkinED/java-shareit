@@ -1,9 +1,7 @@
 package ru.practicum.shareit.request.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -11,10 +9,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.ItemService;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.UserService;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +38,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getUserItemRequests(long userId) {
         userService.get(userId);
-        var userRequests = requestRepository.findAllByRequesterId(userId, Sort.by("createDateTime").descending())
-                .stream()
-                .map(ItemRequestMapper::toItemRequestDto)
-                .collect(Collectors.toList());
-        userRequests.forEach(s -> s.setItems(itemService.findItemByRequestId(s.getId())));
-        return userRequests;
+        List<ItemRequest> itemRequests = requestRepository.findAllByRequesterId(userId, Sort.by("createDateTime").descending());
+        Map<Long, List<ItemDto>> items = itemService.findAll().stream().filter(r -> r.getRequestId() != null)
+                .collect(groupingBy(ItemDto::getRequestId, toList()));
+
+        List<ItemRequestDto> itemRequestDto = new ArrayList<>();
+
+        for (ItemRequest itemRequest : itemRequests) {
+
+            itemRequestDto.add(ItemRequestMapper.toItemRequestDtoWithItems(itemRequest,
+                    items.getOrDefault(itemRequest.getId(), Collections.emptyList())));
+        }
+        return itemRequestDto;
     }
 
     @Override
@@ -51,14 +60,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 ? PageRequest.of(from / size, size, sort)
                 : PageRequest.of(0, Integer.MAX_VALUE, sort);
 
-        var userRequests = requestRepository.findAllByRequesterIdNot(userId, pageable);
+        var itemRequests = requestRepository.findAllByRequesterIdNot(userId, pageable);
+        Map<Long, List<ItemDto>> items = itemService.findAll().stream().filter(r -> r.getRequestId() != null)
+                .collect(groupingBy(ItemDto::getRequestId, toList()));
+        List<ItemRequestDto> itemRequestDto = new ArrayList<>();
+        for (ItemRequest itemRequest : itemRequests) {
 
-        var userRequestsDto = userRequests.stream()
-                .map(ItemRequestMapper::toItemRequestDto)
-                .collect(Collectors.toList());
-        userRequestsDto.forEach(s -> s.setItems(itemService.findItemByRequestId(s.getId())));
-
-        return userRequestsDto;
+            itemRequestDto.add(ItemRequestMapper.toItemRequestDtoWithItems(itemRequest,
+                    items.getOrDefault(itemRequest.getId(), Collections.emptyList())));
+        }
+        return itemRequestDto;
     }
 
     @Override
@@ -66,7 +77,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         userService.get(userId);
         var itemRequestDto = ItemRequestMapper.toItemRequestDto(
                 requestRepository.findById(requestId)
-                .orElseThrow(() -> {
+                        .orElseThrow(() -> {
                             throw new NoSuchElementException("Запроса не найдено");
                         }));
         itemRequestDto.setItems(itemService.findItemByRequestId(itemRequestDto.getId()));

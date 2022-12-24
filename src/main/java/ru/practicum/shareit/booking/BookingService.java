@@ -56,7 +56,7 @@ public class BookingService {
 
     public BookingResponseDto getByAuthorOrOwner(long authorId, long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> {
-            throw new NotFoundException("Бронивароние не найдено");
+            throw new NotFoundException("Бронирование не найдено");
         });
         if (authorId != booking.getItem().getUser().getId() && authorId != booking.getBooker().getId()) {
             throw new NotFoundException("В доступе отказано");

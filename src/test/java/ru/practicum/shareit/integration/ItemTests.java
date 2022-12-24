@@ -338,7 +338,6 @@ class ItemTests {
         em.flush();
 
         itemService.addComment(user.getId(), item.getId(), commentDto);
-        //itemService.addComment(user2.getId(), item2.getId(), commentDto2);
 
         TypedQuery<Comment> query = em.createQuery("select c from Comment c where c.item.id = :item_id", Comment.class);
         var comment = query.setParameter("item_id", item.getId()).getSingleResult();

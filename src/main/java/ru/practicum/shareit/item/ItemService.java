@@ -135,5 +135,11 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
+    public List<ItemDto> findAll() {
+        return itemStorage.findAll().stream()
+                .map(MapToItem::toDto)
+                .collect(Collectors.toList());
+    }
+
 
 }

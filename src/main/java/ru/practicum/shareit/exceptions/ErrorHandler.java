@@ -21,7 +21,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> validationException(final MethodArgumentTypeMismatchException ex) {
-        log.error("MethodArgumentTypeMismatchException " + ex.toString());
+        log.error("MethodArgumentTypeMismatchException {}", ex.toString());
         Map<String, String> map = new HashMap<>();
         String message = "Unknown state: UNSUPPORTED_STATUS";
         map.put("error", message);
@@ -31,31 +31,31 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<String> noUserException(NotFoundException ex) {
-        log.error("NotFoundException" + ex.getMessage());
+        log.error("NotFoundException {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> noItemUserException(NoSuchElementException ex) {
-        log.error("noItemUserException" + ex.getMessage());
+        log.error("noItemUserException {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error("methodArgumentNotValidException " + ex.getMessage());
+        log.error("methodArgumentNotValidException  {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> constraintViolationException(ConstraintViolationException ex) {
-        log.error("constraintViolationException " + ex.getMessage());
+        log.error("constraintViolationException  {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<String> throwable(Throwable ex) {
-        log.error("throwable " + ex.toString());
+        log.error("throwable  {}", ex.toString());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
