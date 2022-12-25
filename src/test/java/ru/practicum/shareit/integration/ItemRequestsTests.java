@@ -73,7 +73,7 @@ class ItemRequestsTests {
     }
     em.flush();
 
-    var targetItemRequests = itemRequestService.getItemRequests(notOwnerUser.getId(), null, null);
+    var targetItemRequests = itemRequestService.getItemRequests(notOwnerUser.getId(), 0, 1000);
     assertSoftly(softAssertions ->
         softAssertions.assertThat(targetItemRequests.size())
             .isEqualTo(sourceItemRequests.size()));

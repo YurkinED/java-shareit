@@ -69,12 +69,7 @@ public class BookingService {
             throw new NotFoundException("Такого пользователя не существует");
         }
         LocalDateTime dateTime = LocalDateTime.now();
-        Pageable pageable;
-        if (from != null && size != null) {
-            pageable = PageRequest.of(from / size, size, sortStartDesc);
-        } else {
-            pageable = PageRequest.of(0, Integer.MAX_VALUE, sortStartDesc);
-        }
+        Pageable pageable = PageRequest.of(from / size, size, sortStartDesc);
         switch (state) {
             case ALL:
                 return BookingMapper.bookingsToBookingResponseDtoList(bookingRepository
@@ -99,17 +94,12 @@ public class BookingService {
         }
     }
 
-    public List<BookingResponseDto> getByItemOwner(long ownerId, State state, Integer from, Integer size) throws NotFoundException {
+    public List<BookingResponseDto> getByItemOwner(long ownerId, State state, Integer from, Integer size) {
         if (!userRepository.existsById(ownerId)) {
             throw new NotFoundException("Такого пользователя не существует");
         }
         LocalDateTime dateTime = LocalDateTime.now();
-        Pageable pageable;
-        if (from != null && size != null) {
-            pageable = PageRequest.of(from / size, size, sortStartDesc);
-        } else {
-            pageable = PageRequest.of(0, Integer.MAX_VALUE, sortStartDesc);
-        }
+        Pageable pageable = PageRequest.of(from / size, size, sortStartDesc);
         switch (state) {
             case ALL:
                 return BookingMapper.bookingsToBookingResponseDtoList(bookingRepository

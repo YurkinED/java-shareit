@@ -135,6 +135,12 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
+    public List<ItemDto> findAllByUser(long userId) {
+        return itemStorage.findAllByUserId(userId).stream()
+                .map(MapToItem::toDto)
+                .collect(Collectors.toList());
+    }
+
     public List<ItemDto> findAll() {
         return itemStorage.findAll().stream()
                 .map(MapToItem::toDto)

@@ -45,9 +45,9 @@ public class MapToItem {
                                                                    List<Comment> comments) {
         ItemWithDateBooking itemWithDateBookingDto = new ItemWithDateBooking();
             Optional<Booking> last = bookingList.stream().filter(booking -> booking.getEnd()
-                    .isBefore(LocalDateTime.now())).findFirst();
+                    .isBefore(LocalDateTime.now()) ||  booking.getEnd().isEqual(LocalDateTime.now())).findFirst();
             Optional<Booking> next = bookingList.stream().filter(booking -> booking.getStart()
-                    .isAfter(LocalDateTime.now())).findFirst();
+                    .isAfter(LocalDateTime.now()) ||  booking.getEnd().isEqual(LocalDateTime.now())).findFirst();
 
             if (last.isEmpty()) {
                 itemWithDateBookingDto.setLastBooking(null);

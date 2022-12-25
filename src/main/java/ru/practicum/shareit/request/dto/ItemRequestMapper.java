@@ -1,11 +1,13 @@
 package ru.practicum.shareit.request.dto;
 
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 
+@UtilityClass
 public class ItemRequestMapper {
 
     public static ItemRequest toItemRequest(long requesterId, @NonNull ItemRequestDto itemRequestDto) {

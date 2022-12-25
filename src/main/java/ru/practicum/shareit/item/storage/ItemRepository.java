@@ -6,9 +6,11 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-public interface ItemRepository  extends JpaRepository<Item, Long> {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByUserId(long userId);
+
+    List<Item> findAll();
 
     @Query(value = "select * from items where available = true and (upper(name) like upper(:str) or upper(description) like upper(:str))", nativeQuery = true)
     List<Item> search(String str);

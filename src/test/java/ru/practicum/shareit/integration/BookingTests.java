@@ -129,28 +129,28 @@ class BookingTests {
         var responseBooking = List.of(bookingResponseDto);
 
 
-        var targetItem = bookingService.getByItemOwner(user.getId(), State.ALL, null, null);
+        var targetItem = bookingService.getByItemOwner(user.getId(), State.ALL, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItem)
                         .usingRecursiveComparison()
                         .ignoringFields("id", "status", "booker")
                         .isEqualTo(responseBooking));
 
-        var targetItemCurrent = bookingService.getByItemOwner(user.getId(), State.CURRENT, null, null);
+        var targetItemCurrent = bookingService.getByItemOwner(user.getId(), State.CURRENT, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemCurrent)
                         .usingRecursiveComparison()
                         .ignoringFields("id", "status", "booker")
                         .isEqualTo(responseBooking));
 
-        var targetItemPast = bookingService.getByItemOwner(user.getId(), State.PAST, null, null);
+        var targetItemPast = bookingService.getByItemOwner(user.getId(), State.PAST, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemCurrent)
                         .usingRecursiveComparison()
                         .ignoringFields("id", "status", "booker")
                         .isEqualTo(responseBooking));
 
-        var targetItemWaiting = bookingService.getByItemOwner(user.getId(), State.WAITING, null, null);
+        var targetItemWaiting = bookingService.getByItemOwner(user.getId(), State.WAITING, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemWaiting)
                         .usingRecursiveComparison()
@@ -169,13 +169,13 @@ class BookingTests {
 
         var responseBookingFuture = List.of(bookingResponseDto2);
 
-        var targetItemFuture = bookingService.getByItemOwner(user.getId(), State.FUTURE, null, null);
+        var targetItemFuture = bookingService.getByItemOwner(user.getId(), State.FUTURE, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemFuture)
                         .usingRecursiveComparison()
                         .ignoringFields("id", "status", "booker")
                         .isEqualTo(responseBookingFuture));
-        var targetItemRejected = bookingService.getByItemOwner(user.getId(), State.REJECTED, null, null);
+        var targetItemRejected = bookingService.getByItemOwner(user.getId(), State.REJECTED, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemRejected)
                         .usingRecursiveComparison()
@@ -258,13 +258,13 @@ class BookingTests {
         var responseBooking = List.of(bookingResponseDto);
 
 
-        var targetItem = bookingService.getSort(user.getId(), State.ALL, null, null);
+        var targetItem = bookingService.getSort(user.getId(), State.ALL, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItem)
                         .usingRecursiveComparison()
                         .ignoringFields("id", "status", "booker")
                         .isEqualTo(responseBooking));
-        var targetItemCurrent = bookingService.getSort(user.getId(), State.CURRENT, null, null);
+        var targetItemCurrent = bookingService.getSort(user.getId(), State.CURRENT, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemCurrent)
                         .usingRecursiveComparison()
@@ -272,7 +272,7 @@ class BookingTests {
                         .isEqualTo(responseBooking));
 
 
-        var targetItemWaiting = bookingService.getSort(user.getId(), State.WAITING, null, null);
+        var targetItemWaiting = bookingService.getSort(user.getId(), State.WAITING, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemWaiting)
                         .usingRecursiveComparison()
@@ -293,14 +293,14 @@ class BookingTests {
         var responseBooking2 = List.of(bookingResponseDto2);
 
 
-        var targetItemFuture = bookingService.getSort(user.getId(), State.FUTURE, null, null);
+        var targetItemFuture = bookingService.getSort(user.getId(), State.FUTURE, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemFuture)
                         .usingRecursiveComparison()
                         .ignoringFields("id", "status", "booker")
                         .isEqualTo(responseBooking2));
 
-        var targetItemRejected = bookingService.getSort(user.getId(), State.REJECTED, null, null);
+        var targetItemRejected = bookingService.getSort(user.getId(), State.REJECTED, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemRejected)
                         .usingRecursiveComparison()
@@ -318,7 +318,7 @@ class BookingTests {
         BookingResponseDto bookingResponseDto3 = BookingMapper.bookingToBookingResponseDto(booking3);
         var responseBooking3 = List.of(bookingResponseDto3);
 
-        var targetItemPast = bookingService.getSort(user.getId(), State.PAST, null, null);
+        var targetItemPast = bookingService.getSort(user.getId(), State.PAST, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(targetItemPast)
                         .usingRecursiveComparison()

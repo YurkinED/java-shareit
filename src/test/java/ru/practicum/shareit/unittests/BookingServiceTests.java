@@ -127,7 +127,7 @@ class BookingServiceTests {
         Mockito.when(userRepository.existsById(any())).thenReturn(true);
         Mockito.when(bookingRepository.findAllByBooker_IdOrderByStartDesc(anyLong(), any())).thenReturn(List.of(booking2));
 
-        var actualBooking = bookingService.getSort(bookerId, State.ALL, null, null);
+        var actualBooking = bookingService.getSort(bookerId, State.ALL, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(actualBooking)
                         .usingRecursiveComparison()
@@ -144,7 +144,7 @@ class BookingServiceTests {
         Mockito.when(userRepository.existsById(any())).thenReturn(true);
         Mockito.when(bookingRepository.findAllByItem_UserId(anyLong(), any())).thenReturn(List.of(booking2));
 
-        var actualBooking = bookingService.getByItemOwner(bookerId, State.ALL, null, null);
+        var actualBooking = bookingService.getByItemOwner(bookerId, State.ALL, 0, 1000);
         assertSoftly(softAssertions ->
                 softAssertions.assertThat(actualBooking)
                         .usingRecursiveComparison()
