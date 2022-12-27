@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.MapToItem;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -25,10 +27,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final RequestRepository requestRepository;
     private final UserService userService;
+    private final ItemRepository itemRepository;
+
     private final ItemService itemService;
 
     @Override
-    public ItemRequestDto createItemRequest(long requesterId, ItemRequestDto requestDto) {
+    public ItemRequestDto create(long requesterId, ItemRequestDto requestDto) {
         userService.get(requesterId);
         requestDto.setCreated(LocalDateTime.now());
         var itemRequest = requestRepository.save(ItemRequestMapper.toItemRequest(requesterId, requestDto));
@@ -36,16 +40,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getUserItemRequests(long userId) {
+    public List<ItemRequestDto> getByUser(long userId) {
         userService.get(userId);
         List<ItemRequest> itemRequests = requestRepository.findAllByRequesterId(userId, Sort.by("createDateTime").descending());
-        Map<Long, List<ItemDto>> items = itemService.findAll().stream().filter(r -> r.getRequestId() != null)
+        List<Long> requestsId = itemRequests.stream().map(ItemRequest::getRequesterId).collect(toList());
+        Map<Long, List<ItemDto>> items = itemRepository.findItemByRequestIdIn(requestsId).stream()
+                .map(MapToItem::toDto)
                 .collect(groupingBy(ItemDto::getRequestId, toList()));
-
         List<ItemRequestDto> itemRequestDto = new ArrayList<>();
 
         for (ItemRequest itemRequest : itemRequests) {
-
             itemRequestDto.add(ItemRequestMapper.toItemRequestDtoWithItems(itemRequest,
                     items.getOrDefault(itemRequest.getId(), Collections.emptyList())));
         }
@@ -53,7 +57,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getItemRequests(long userId, Integer from, Integer size) {
+    public List<ItemRequestDto> getList(long userId, Integer from, Integer size) {
         userService.get(userId);
         Sort sort = Sort.by("createDateTime").descending();
         Pageable pageable = PageRequest.of(from / size, size, sort);
@@ -71,7 +75,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto getItemRequest(long userId, long requestId) {
+    public ItemRequestDto get(long userId, long requestId) {
         userService.get(userId);
         var itemRequestDto = ItemRequestMapper.toItemRequestDto(
                 requestRepository.findById(requestId)

@@ -42,7 +42,7 @@ class ItemRequestsTests {
     em.persist(entity);
     em.flush();
 
-    var targetItemRequests = itemRequestService.createItemRequest(notOwnerUser.getId(), sourceItemRequest);
+    var targetItemRequests = itemRequestService.create(notOwnerUser.getId(), sourceItemRequest);
     assertSoftly(softAssertions ->
         softAssertions.assertThat(targetItemRequests)
             .usingRecursiveComparison()
@@ -73,7 +73,7 @@ class ItemRequestsTests {
     }
     em.flush();
 
-    var targetItemRequests = itemRequestService.getItemRequests(notOwnerUser.getId(), 0, 1000);
+    var targetItemRequests = itemRequestService.getList(notOwnerUser.getId(), 0, 1000);
     assertSoftly(softAssertions ->
         softAssertions.assertThat(targetItemRequests.size())
             .isEqualTo(sourceItemRequests.size()));
@@ -102,7 +102,7 @@ class ItemRequestsTests {
     }
     em.flush();
 
-    var targetItemRequests = itemRequestService.getItemRequests(notOwnerUser.getId(), 0, 2);
+    var targetItemRequests = itemRequestService.getList(notOwnerUser.getId(), 0, 2);
     assertSoftly(softAssertions ->
         softAssertions.assertThat(targetItemRequests.size())
             .isEqualTo(sourceItemRequests.size()));
@@ -131,7 +131,7 @@ class ItemRequestsTests {
     }
     em.flush();
 
-    var targetItemRequests = itemRequestService.getUserItemRequests(user.getId());
+    var targetItemRequests = itemRequestService.getByUser(user.getId());
     assertSoftly(softAssertions ->
         softAssertions.assertThat(targetItemRequests.size())
             .isEqualTo(sourceItemRequests.size()));
@@ -151,7 +151,7 @@ class ItemRequestsTests {
     em.persist(sourceItemRequest);
     em.flush();
 
-    var targetItemRequests = itemRequestService.getItemRequest(user.getId(), sourceItemRequest.getId());
+    var targetItemRequests = itemRequestService.get(user.getId(), sourceItemRequest.getId());
     assertSoftly(softAssertions ->
         softAssertions.assertThat(targetItemRequests)
             .usingRecursiveComparison()
@@ -173,12 +173,12 @@ class ItemRequestsTests {
     em.persist(sourceItemRequest);
     em.flush();
     assertThatThrownBy(() -> {
-      itemRequestService.getItemRequest(1000L, sourceItemRequest.getId());
+      itemRequestService.get(1000L, sourceItemRequest.getId());
     }).isInstanceOf(NotFoundException.class)
             .hasMessageContaining("Такого пользователь не существует");
 
     assertThatThrownBy(() -> {
-      itemRequestService.getItemRequest(user.getId(), 1000L);
+      itemRequestService.get(user.getId(), 1000L);
     }).isInstanceOf(NoSuchElementException.class)
             .hasMessageContaining("Запроса не найдено");
   }

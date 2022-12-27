@@ -5,11 +5,11 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 public interface ItemRequestService {
 
-  ItemRequestDto createItemRequest(long requesterId, ItemRequestDto requestDto);
+  ItemRequestDto create(long requesterId, ItemRequestDto requestDto);
 
-  List<ItemRequestDto> getUserItemRequests(long userId);
+  List<ItemRequestDto> getByUser(long userId);
 
-  List<ItemRequestDto> getItemRequests(long userId, Integer from, Integer size);
+  List<ItemRequestDto> getList(long userId, Integer from, Integer size);
 
-  ItemRequestDto getItemRequest(long userId, long requestId);
+  ItemRequestDto get(long userId, long requestId);
 }

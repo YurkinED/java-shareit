@@ -27,26 +27,26 @@ public class ItemRequestController {
   private final ItemRequestService itemRequestService;
 
   @PostMapping
-  public ItemRequestDto createItemRequest(@RequestHeader("X-Sharer-User-Id") long requesterId,
-      @RequestBody @Valid ItemRequestDto itemRequestDto) {
-    return itemRequestService.createItemRequest(requesterId, itemRequestDto);
+  public ItemRequestDto create(@RequestHeader("X-Sharer-User-Id") long requesterId,
+                               @RequestBody @Valid ItemRequestDto itemRequestDto) {
+    return itemRequestService.create(requesterId, itemRequestDto);
   }
 
   @GetMapping
-  public List<ItemRequestDto> getUserItemRequests(@RequestHeader("X-Sharer-User-Id") long requesterId) {
-    return itemRequestService.getUserItemRequests(requesterId);
+  public List<ItemRequestDto> getByUser(@RequestHeader("X-Sharer-User-Id") long requesterId) {
+    return itemRequestService.getByUser(requesterId);
   }
 
   @GetMapping("/all")
-  public List<ItemRequestDto> getItemRequests(@RequestHeader("X-Sharer-User-Id") long requesterId,
-      @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-      @RequestParam(value = "size", defaultValue = "1000") @Positive Integer size) {
-    return itemRequestService.getItemRequests(requesterId, from, size);
+  public List<ItemRequestDto> get(@RequestHeader("X-Sharer-User-Id") long requesterId,
+                                  @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                  @RequestParam(value = "size", defaultValue = "1000") @Positive Integer size) {
+    return itemRequestService.getList(requesterId, from, size);
   }
 
   @GetMapping("/{requestId}")
-  public ItemRequestDto getItemRequestById(@RequestHeader("X-Sharer-User-Id") long requesterId,
-      @PathVariable long requestId) {
-    return itemRequestService.getItemRequest(requesterId, requestId);
+  public ItemRequestDto getById(@RequestHeader("X-Sharer-User-Id") long requesterId,
+                                @PathVariable long requestId) {
+    return itemRequestService.get(requesterId, requestId);
   }
 }

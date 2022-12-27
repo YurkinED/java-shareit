@@ -53,7 +53,7 @@ class ItemRequestControllerTests {
 
   @Test
   void createItemRequestTest() throws Exception {
-    when(itemRequestService.createItemRequest(anyLong(), any())).thenReturn(itemRequestDto);
+    when(itemRequestService.create(anyLong(), any())).thenReturn(itemRequestDto);
 
     var response = mvc.perform(post("/requests")
             .content(mapper.writeValueAsString(itemRequestDto))
@@ -73,7 +73,7 @@ class ItemRequestControllerTests {
   @Test
   void getUserItemRequestsTest() throws Exception {
     var itemRequests = List.of(itemRequestDto);
-    when(itemRequestService.getUserItemRequests(anyLong())).thenReturn(itemRequests);
+    when(itemRequestService.getByUser(anyLong())).thenReturn(itemRequests);
 
     var response = mvc.perform(get("/requests")
             .header("X-Sharer-User-Id", user.getId())
@@ -94,7 +94,7 @@ class ItemRequestControllerTests {
   @Test
   void getItemRequestsTest() throws Exception {
     var itemRequests = List.of(itemRequestDto);
-    when(itemRequestService.getItemRequests(anyLong(), any(), any())).thenReturn(itemRequests);
+    when(itemRequestService.getList(anyLong(), any(), any())).thenReturn(itemRequests);
 
     var response = mvc.perform(get("/requests/all")
             .header("X-Sharer-User-Id", user.getId())
@@ -114,7 +114,7 @@ class ItemRequestControllerTests {
 
   @Test
   void getItemRequestByIdTest() throws Exception {
-    when(itemRequestService.getItemRequest(anyLong(), anyLong())).thenReturn(itemRequestDto);
+    when(itemRequestService.get(anyLong(), anyLong())).thenReturn(itemRequestDto);
 
     var response = mvc.perform(get("/requests/{requestId}", itemRequestDto.getId())
             .header("X-Sharer-User-Id", user.getId())
