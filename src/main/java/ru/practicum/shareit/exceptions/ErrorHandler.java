@@ -55,7 +55,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<String> throwable(Throwable ex) {
-        log.error("throwable  {}", ex.toString());
+        log.error("throwable " + ex.toString());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

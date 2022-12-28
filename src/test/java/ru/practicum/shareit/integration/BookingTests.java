@@ -526,4 +526,63 @@ class BookingTests {
                 .hasMessageContaining("Вещь не найдена");
 
     }
+
+    @Test
+    void addBookingExceptionTest() {
+        var user2 = new User(0, "authorName1", "mail1@mail.com");
+        var item = new Item();
+        item.setName("itemName");
+        item.setDescription("itemDescription");
+        item.setAvailable(true);
+        item.setUser(user2);
+
+        var booking = new Booking();
+        booking.setItem(item);
+        booking.setStart(LocalDateTime.now());
+        booking.setEnd(LocalDateTime.now().minusDays(5));
+
+        var booking2 = new Booking();
+        booking2.setItem(item);
+        booking2.setStart(LocalDateTime.now().minusDays(5));
+        booking2.setEnd(LocalDateTime.now());
+
+
+        BookingResponseDto bookingResponseDto = BookingMapper.bookingToBookingResponseDto(booking);
+
+        assertThatThrownBy(() -> {
+            bookingService.add(user2.getId(), BookingMapper.bookingToBookingDto(booking));
+        }).isInstanceOf(BookingException.class)
+                .hasMessageContaining("Дата старта не может быть позже или равна окончанию");
+
+        assertThatThrownBy(() -> {
+            bookingService.add(user2.getId(), BookingMapper.bookingToBookingDto(booking2));
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Бронирование не найдено");
+    }
+
+    @Test
+    void addBookingException2Test() {
+        var user1 = new User(0, "authorName1", "mail1@mail.com");
+        var user2 = new User(0, "authorName2", "mail2@mail.com");
+        em.persist(user1);
+        var item = new Item();
+        item.setName("itemName");
+        item.setDescription("itemDescription");
+        item.setAvailable(true);
+        item.setUser(user1);
+        em.persist(item);
+        em.flush();
+
+
+        var booking = new Booking();
+        booking.setItem(item);
+        booking.setStart(LocalDateTime.now());
+        booking.setEnd(LocalDateTime.now().plusDays(5));
+
+        assertThatThrownBy(() -> {
+            bookingService.add(user2.getId(), BookingMapper.bookingToBookingDto(booking));
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Пользователь не найден");
+    }
 }
+

@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.BookingService;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exceptions.BookingException;
 import ru.practicum.shareit.exceptions.EmailException;
 import ru.practicum.shareit.exceptions.NotFoundException;
@@ -44,6 +46,8 @@ class ExceptionHandlerTests {
     private UserDto userDto2;
     private UserDto userDto3;
 
+    private BookingDto bookingDto;
+
     @MockBean
     private BookingService bookingService;
 
@@ -53,6 +57,9 @@ class ExceptionHandlerTests {
         userDto1 = new UserDto(2L, "testUserName1", "testUser@mail.ru");
         userDto2 = new UserDto(3L, "testUserName2", "testUser@mail.ru");
         userDto3 = new UserDto(4L, "", "testUser@mail.ru");
+        bookingDto = new BookingDto();
+        bookingDto.setStart(LocalDateTime.now());
+        bookingDto.setEnd(LocalDateTime.now().minusDays(1));
     }
 
     @Test
@@ -147,6 +154,18 @@ class ExceptionHandlerTests {
         var response = mvc.perform(get("/bookings")
                         .param("state", "UNSUPPORTED_STATUS")
                         .header("X-Sharer-User-Id", 1)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andReturn().getResponse();
+    }
+
+    @Test
+    void bookItemWrongDateTest() throws Exception {
+
+        var response = mvc.perform(post("/booking")
+                        .content(mapper.writeValueAsString(bookingDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
