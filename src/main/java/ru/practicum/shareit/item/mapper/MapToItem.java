@@ -46,7 +46,7 @@ public class MapToItem {
         ItemWithDateBooking itemWithDateBookingDto = new ItemWithDateBooking();
         Optional<Booking> last = bookingList.stream().filter(booking -> (booking.getEnd()
                 .isBefore(LocalDateTime.now()) ||
-                booking.getEnd().isEqual(LocalDateTime.now()) && (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().isEqual(LocalDateTime.now())))
+                booking.getEnd().isEqual(LocalDateTime.now()) || (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().isEqual(LocalDateTime.now())))
         ).findFirst();
         Optional<Booking> next = bookingList.stream().filter(booking -> booking.getStart()
                 .isAfter(LocalDateTime.now())).findFirst();

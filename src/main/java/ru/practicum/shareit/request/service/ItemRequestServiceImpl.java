@@ -63,8 +63,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Pageable pageable = PageRequest.of(from / size, size, sort);
 
         var itemRequests = requestRepository.findAllByRequesterIdNot(userId, pageable);
-        Map<Long, List<ItemDto>> items = itemService.findAllByUser(userId).stream().filter(r -> r.getRequestId() != null)
+        List<Long> requestsId = itemRequests.stream().map(ItemRequest::getRequesterId).collect(toList());
+        Map<Long, List<ItemDto>> items = itemRepository.findItemByRequestIdIn(requestsId).stream()
+                .map(MapToItem::toDto)
                 .collect(groupingBy(ItemDto::getRequestId, toList()));
+        //Map<Long, List<ItemDto>> items = itemService.findAllByUser(userId).stream().filter(r -> r.getRequestId() != null)
+        //        .collect(groupingBy(ItemDto::getRequestId, toList()));
         List<ItemRequestDto> itemRequestDto = new ArrayList<>();
         for (ItemRequest itemRequest : itemRequests) {
 
