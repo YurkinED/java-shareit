@@ -28,7 +28,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final RequestRepository requestRepository;
     private final UserService userService;
     private final ItemRepository itemRepository;
-
     private final ItemService itemService;
 
     @Override
@@ -48,7 +47,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .map(MapToItem::toDto)
                 .collect(groupingBy(ItemDto::getRequestId, toList()));
         List<ItemRequestDto> itemRequestDto = new ArrayList<>();
-
         for (ItemRequest itemRequest : itemRequests) {
             itemRequestDto.add(ItemRequestMapper.toItemRequestDtoWithItems(itemRequest,
                     items.getOrDefault(itemRequest.getId(), Collections.emptyList())));
@@ -67,8 +65,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Map<Long, List<ItemDto>> items = itemRepository.findItemByRequestIdIn(requestsId).stream()
                 .map(MapToItem::toDto)
                 .collect(groupingBy(ItemDto::getRequestId, toList()));
-        //Map<Long, List<ItemDto>> items = itemService.findAllByUser(userId).stream().filter(r -> r.getRequestId() != null)
-        //        .collect(groupingBy(ItemDto::getRequestId, toList()));
         List<ItemRequestDto> itemRequestDto = new ArrayList<>();
         for (ItemRequest itemRequest : itemRequests) {
 
