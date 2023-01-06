@@ -10,9 +10,12 @@ import ru.practicum.shareit.item.model.ItemWithDateBooking;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static ru.practicum.shareit.ShareItServer.zoneIdGlobal;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -44,12 +47,14 @@ public class MapToItem {
     public static ItemWithDateBooking itemToItemWithDateBookingDto(Item item, List<Booking> bookingList,
                                                                    List<Comment> comments) {
         ItemWithDateBooking itemWithDateBookingDto = new ItemWithDateBooking();
+        System.out.println("Search date="+LocalDateTime.now());
+        System.out.println("Search date="+LocalDateTime.now(zoneIdGlobal));
         Optional<Booking> last = bookingList.stream().filter(booking -> (booking.getEnd()
-                .isBefore(LocalDateTime.now()) ||
-                booking.getEnd().isEqual(LocalDateTime.now()) || (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().isEqual(LocalDateTime.now())))
+                .isBefore(LocalDateTime.now(zoneIdGlobal)) ||
+                booking.getEnd().isEqual(LocalDateTime.now(zoneIdGlobal)) || (booking.getStart().isBefore(LocalDateTime.now(zoneIdGlobal)) || booking.getStart().isEqual(LocalDateTime.now(zoneIdGlobal))))
         ).findFirst();
         Optional<Booking> next = bookingList.stream().filter(booking -> booking.getStart()
-                .isAfter(LocalDateTime.now())).findFirst();
+                .isAfter(LocalDateTime.now(zoneIdGlobal))).findFirst();
 
         if (last.isEmpty()) {
             itemWithDateBookingDto.setLastBooking(null);

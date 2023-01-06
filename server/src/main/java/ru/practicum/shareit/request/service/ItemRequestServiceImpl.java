@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.UserService;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static ru.practicum.shareit.ShareItServer.zoneIdGlobal;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public ItemRequestDto create(long requesterId, ItemRequestDto requestDto) {
         userService.get(requesterId);
-        requestDto.setCreated(LocalDateTime.now());
+        requestDto.setCreated(LocalDateTime.now(zoneIdGlobal));
         var itemRequest = requestRepository.save(ItemRequestMapper.toItemRequest(requesterId, requestDto));
         return ItemRequestMapper.toItemRequestDto(itemRequest);
     }

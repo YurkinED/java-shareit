@@ -29,4 +29,16 @@ public class Booking {
     private User booker;
     @Column
     private BookingStatus status;
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "id=" + id +
+                ", start=" + start +
+                ", end=" + end +
+                ", item=" + item +
+                ", booker=" + booker +
+                ", status=" + status +
+                '}';
+    }
 }

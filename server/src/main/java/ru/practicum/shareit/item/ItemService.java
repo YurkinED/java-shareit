@@ -28,6 +28,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.domain.Sort.Direction.DESC;
+import static ru.practicum.shareit.ShareItServer.zoneIdGlobal;
 
 
 @Service
@@ -56,12 +57,6 @@ public class ItemService {
         Map<Item, List<Booking>> bookings = bookingRepository.findByItemInAndStatusEquals(items, BookingStatus.APPROVED)
                 .stream()
                 .collect(groupingBy(Booking::getItem, toList()));
-        for (Item item : items) {
-            itemsWithDateBookingDto.add(MapToItem.itemToItemWithDateBookingDto(item,
-                    bookings.getOrDefault(item, Collections.emptyList()),
-                    comments.getOrDefault(item, Collections.emptyList())
-            ));
-        }
         Collections.sort(itemsWithDateBookingDto, comparing(ItemWithDateBooking::getId));
         return itemsWithDateBookingDto;
     }
@@ -114,11 +109,11 @@ public class ItemService {
 
     @Transactional
     public CommentDto addComment(long userId, long itemId, CommentDto comment) {
-        if (bookingRepository.findAllByItem_IdAndBooker_IdAndEndIsBefore(itemId, userId, LocalDateTime.now())
+        if (bookingRepository.findAllByItem_IdAndBooker_IdAndEndIsBefore(itemId, userId, LocalDateTime.now(zoneIdGlobal))
                 .isEmpty()) {
             throw new BookingException("Вы не можете оставить отзыв на эту вещь");
         }
-        comment.setCreated(LocalDateTime.now());
+        comment.setCreated(LocalDateTime.now(zoneIdGlobal));
         return CommentMapper.commentToCommentDto(commentRepository.save(CommentMapper
                 .commentDtoToComment(itemStorage.findById(itemId).orElseThrow(() -> {
                             throw new NotFoundException("Вещь не найдена");

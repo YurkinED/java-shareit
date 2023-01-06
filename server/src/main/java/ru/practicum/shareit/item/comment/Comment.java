@@ -30,4 +30,15 @@ public class Comment {
     private User author;
 
     private LocalDateTime created;
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", item=" + item +
+                ", author=" + author +
+                ", created=" + created +
+                '}';
+    }
 }

@@ -21,6 +21,8 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ru.practicum.shareit.ShareItServer.zoneIdGlobal;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -68,7 +70,7 @@ public class BookingService {
         if (!userRepository.existsById(authorId)) {
             throw new NotFoundException("Такого пользователя не существует");
         }
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime dateTime = LocalDateTime.now(zoneIdGlobal);
         Pageable pageable = PageRequest.of(from / size, size, sortStartDesc);
         switch (state) {
             case ALL:
@@ -98,7 +100,7 @@ public class BookingService {
         if (!userRepository.existsById(ownerId)) {
             throw new NotFoundException("Такого пользователя не существует");
         }
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime dateTime = LocalDateTime.now(zoneIdGlobal);
         Pageable pageable = PageRequest.of(from / size, size, sortStartDesc);
         switch (state) {
             case ALL:
@@ -126,7 +128,9 @@ public class BookingService {
 
     @Transactional
     public BookingResponseDto updateStatus(long authorId, long bookingId, boolean approved) {
-        Booking booking = bookingRepository.getById(bookingId);
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> {
+            throw new NotFoundException("Бронирование не найдено");
+        });
         if (booking.getItem().getUser().getId() != authorId) {
             throw new NotFoundException("Вещь не найдена");
         }
