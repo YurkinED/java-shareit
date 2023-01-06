@@ -128,9 +128,7 @@ public class BookingService {
 
     @Transactional
     public BookingResponseDto updateStatus(long authorId, long bookingId, boolean approved) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> {
-            throw new NotFoundException("Бронирование не найдено");
-        });
+        Booking booking = bookingRepository.getById(bookingId);
         if (booking.getItem().getUser().getId() != authorId) {
             throw new NotFoundException("Вещь не найдена");
         }

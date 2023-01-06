@@ -57,7 +57,12 @@ public class ItemService {
         Map<Item, List<Booking>> bookings = bookingRepository.findByItemInAndStatusEquals(items, BookingStatus.APPROVED)
                 .stream()
                 .collect(groupingBy(Booking::getItem, toList()));
-        Collections.sort(itemsWithDateBookingDto, comparing(ItemWithDateBooking::getId));
+        for (Item item : items) {
+            itemsWithDateBookingDto.add(MapToItem.itemToItemWithDateBookingDto(item,
+                    bookings.getOrDefault(item, Collections.emptyList()),
+                    comments.getOrDefault(item, Collections.emptyList())
+            ));
+        }
         return itemsWithDateBookingDto;
     }
 
