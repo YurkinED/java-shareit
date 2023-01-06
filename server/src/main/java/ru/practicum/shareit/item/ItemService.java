@@ -48,7 +48,7 @@ public class ItemService {
             throw new NotFoundException("Такого пользователя не существует");
         }
 
-        List<Item> items = itemStorage.findAllByUserIdOrderById(user);
+        List<Item> items = itemStorage.findAllByUserId(user);
         List<ItemWithDateBooking> itemsWithDateBookingDto = new ArrayList<>();
 
         Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
