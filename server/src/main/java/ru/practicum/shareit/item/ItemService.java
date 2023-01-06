@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -62,6 +63,7 @@ public class ItemService {
                     comments.getOrDefault(item, Collections.emptyList())
             ));
         }
+        Collections.sort(itemsWithDateBookingDto, comparing(ItemWithDateBooking::getId));
         return itemsWithDateBookingDto;
     }
 
