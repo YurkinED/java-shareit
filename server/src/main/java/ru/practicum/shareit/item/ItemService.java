@@ -21,12 +21,10 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -49,7 +47,7 @@ public class ItemService {
             throw new NotFoundException("Такого пользователя не существует");
         }
 
-        List<Item> items = itemStorage.findAllByUserId(user);
+        List<Item> items = itemStorage.findAllByUserIdOrderById(user);
         List<ItemWithDateBooking> itemsWithDateBookingDto = new ArrayList<>();
 
         Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
@@ -64,6 +62,7 @@ public class ItemService {
                     comments.getOrDefault(item, Collections.emptyList())
             ));
         }
+        Collections.sort(itemsWithDateBookingDto, comparing(ItemWithDateBooking::getId));
         return itemsWithDateBookingDto;
     }
 
