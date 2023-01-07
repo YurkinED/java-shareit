@@ -348,25 +348,6 @@ class ItemTests {
                         .isEqualTo(CommentMapper.commentDtoToComment(item, user, commentDto)));
     }
 
-/*
-    @Test
-    void exceptionTest() {
-        var user = new User(0, "authorName", "mail@mail.com");
-        var itemDto = ItemDto.builder()
-                .name("itemName")
-                .description("itemDescription")
-                .available(true)
-                .build();
-
-        em.persist(user);
-
-        assertThatThrownBy(() -> {
-            itemService.add(2L, itemDto);
-        }).isInstanceOf(ValidationException.class)
-                .hasMessageContaining("Такого пользователь не существует");
-
-    }
-*/
     @Test
     void exception2Test() {
         var user = new User(0, "authorName", "mail@mail.com");

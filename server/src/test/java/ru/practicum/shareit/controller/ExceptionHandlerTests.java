@@ -60,20 +60,6 @@ class ExceptionHandlerTests {
         bookingDto.setEnd(LocalDateTime.now().minusDays(1));
     }
 
-    /*
-        @Test
-        void createUserWithSuchElementExceptionTest() throws Exception {
-
-            var response = mvc.perform(post("/users")
-                            .content(mapper.writeValueAsString(userDto))
-                            .characterEncoding(StandardCharsets.UTF_8)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().is4xxClientError())
-                    .andReturn().getResponse();
-
-        }
-    */
     @Test
     void createUserWithDoubleEmailExceptionTest() throws Exception {
         when(userService.add(userDto1))
