@@ -10,8 +10,6 @@ import ru.practicum.shareit.Create;
 import ru.practicum.shareit.Update;
 import ru.practicum.shareit.user.dto.UserRequestDto;
 
-import javax.validation.Valid;
-
 @Controller
 @RequestMapping("/users")
 @Slf4j

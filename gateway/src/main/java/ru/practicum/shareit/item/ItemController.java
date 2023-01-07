@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,12 +11,9 @@ import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/items")
@@ -69,15 +65,15 @@ public class ItemController {
                                              @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Поиск по имени {}", text);
-        if (text.isBlank()){
+        if (text.isBlank()) {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
-        return itemClient.searchItem(userId, text,  from, size);
+        return itemClient.searchItem(userId, text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> createComment(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId,
-                                                @Valid @RequestBody  CommentRequestDto requestDto) {
+                                                @Valid @RequestBody CommentRequestDto requestDto) {
         log.info("Добавление комментария к вещи {}", itemId);
         return itemClient.createComment(itemId, userId, requestDto);
     }
