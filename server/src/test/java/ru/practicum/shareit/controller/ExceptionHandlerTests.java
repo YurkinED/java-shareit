@@ -1,14 +1,17 @@
 package ru.practicum.shareit.controller;
 
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.exceptions.BookingException;
 import ru.practicum.shareit.exceptions.EmailException;
 import ru.practicum.shareit.exceptions.NotFoundException;
@@ -95,6 +99,23 @@ class ExceptionHandlerTests {
                     .andReturn().getResponse();
         }
     */
+    @Test
+    void getBookingByUnknownUser() throws Exception {
+        var bookingResponseDto = new BookingResponseDto();
+        bookingResponseDto.setId(1L);
+        bookingResponseDto.setStart(bookingDto.getStart());
+        bookingResponseDto.setEnd(bookingDto.getEnd());
+        var expectedBookings = List.of(bookingResponseDto);
+        var response = mvc.perform(get("/bookings")
+                        .param("state", "ALL")
+                        .header("X-Sharer-User-Id", 100)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andReturn().getResponse();
+    }
+
     @Test
     void findNotExistUserExceptionTest() throws Exception {
         when(userService.get(anyLong()))

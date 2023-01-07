@@ -103,6 +103,90 @@ class BookingTests {
     }
 
     @Test
+    void getByAuthorOrOwnerExceptionTest() {
+        var user = new User(0, "authorName", "mail@mail.com");
+        var user2 = new User(0, "authorName1", "mail1@mail.com");
+
+        em.persist(user);
+        em.persist(user2);
+        var item = new Item();
+        item.setName("itemName");
+        item.setDescription("itemDescription");
+        item.setAvailable(true);
+        item.setUser(user);
+        em.persist(item);
+
+        var booking = new Booking();
+        booking.setBooker(user);
+        booking.setItem(item);
+        booking.setStart(LocalDateTime.now().minusDays(10));
+        booking.setEnd(LocalDateTime.now().minusDays(5));
+        booking.setStatus(BookingStatus.WAITING);
+        em.persist(booking);
+        em.flush();
+
+        BookingResponseDto bookingResponseDto = BookingMapper.bookingToBookingResponseDto(booking);
+
+        assertThatThrownBy(() -> {
+            bookingService.getByAuthorOrOwner(100L, 100L);
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Бронирование не найдено");
+
+        assertThatThrownBy(() -> {
+            bookingService.getByAuthorOrOwner(100L, booking.getId());
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("В доступе отказано");
+    }
+
+    @Test
+    void getSortExceptionTest() {
+        var user = new User(0, "authorName", "mail@mail.com");
+        var user2 = new User(0, "authorName1", "mail1@mail.com");
+
+        em.persist(user);
+        em.persist(user2);
+        var item = new Item();
+        item.setName("itemName");
+        item.setDescription("itemDescription");
+        item.setAvailable(true);
+        item.setUser(user);
+        em.persist(item);
+
+        var booking = new Booking();
+        booking.setBooker(user);
+        booking.setItem(item);
+        booking.setStart(LocalDateTime.now().minusDays(10));
+        booking.setEnd(LocalDateTime.now().plusDays(5));
+        booking.setStatus(BookingStatus.WAITING);
+        em.persist(booking);
+        em.flush();
+
+        Comment comment = new Comment();
+        comment.setId(1L);
+        comment.setCreated(LocalDateTime.now());
+        comment.setText("text");
+        comment.setAuthor(user);
+
+        ItemWithDateBooking itemWithDateBooking = MapToItem.itemToItemWithDateBookingDto(item, List.of(booking), List.of(comment));
+
+
+        BookingResponseDto bookingResponseDto = BookingMapper.bookingToBookingResponseDto(booking);
+        var responseBooking = List.of(bookingResponseDto);
+
+
+        assertThatThrownBy(() -> {
+            bookingService.getSort(100L, State.ALL, 0, 1000);
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Такого пользователя не существует");
+
+        assertThatThrownBy(() -> {
+            bookingService.getSort(user.getId(), State.valueOf("unknownstate"), 0, 1000);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("No enum constant ru.practicum.shareit.booking.model.State.unknownstate");
+    }
+
+
+    @Test
     void getByItemOwnerAllTest() {
         var user = new User(0, "authorName", "mail@mail.com");
         var user2 = new User(0, "authorName1", "mail1@mail.com");
@@ -437,7 +521,7 @@ class BookingTests {
 
 
     @Test
-    void getSortExceptionTest() {
+    void getSortException2Test() {
         var user = new User(0, "authorName", "mail@mail.com");
 
         em.persist(user);
