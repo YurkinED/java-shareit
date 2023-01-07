@@ -1,12 +1,10 @@
 package ru.practicum.shareit.controller;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
@@ -87,18 +85,6 @@ class ExceptionHandlerTests {
                 .andReturn().getResponse();
     }
 
-    /*
-        @Test
-        void createUserWithEmptyNameExceptionTest() throws Exception {
-            var response = mvc.perform(post("/users")
-                            .content(mapper.writeValueAsString(userDto3))
-                            .characterEncoding(StandardCharsets.UTF_8)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().is4xxClientError())
-                    .andReturn().getResponse();
-        }
-    */
     @Test
     void getBookingByUnknownUser() throws Exception {
         var bookingResponseDto = new BookingResponseDto();
