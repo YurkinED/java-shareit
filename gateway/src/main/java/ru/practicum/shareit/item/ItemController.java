@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -10,8 +12,12 @@ import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/items")
@@ -25,21 +31,21 @@ public class ItemController {
     public ResponseEntity<Object> getItems(@RequestHeader("X-Sharer-User-Id") Long userId,
                                            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Get all items from user {}", userId);
+        log.info("Получение всех вещей пользователя {}", userId);
         return itemClient.getItems(userId, from, size);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItem(@PathVariable Long id,
                                           @RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Get item {}", id);
+        log.info("Получение вещи {}", id);
         return itemClient.getItem(id, userId);
     }
 
     @PostMapping
     public ResponseEntity<Object> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                              @RequestBody @Valid ItemRequestDto requestDto) {
-        log.info("Create item");
+        log.info("Создание вещи");
         return itemClient.createItem(userId, requestDto);
     }
 
@@ -47,13 +53,13 @@ public class ItemController {
     public ResponseEntity<Object> updateItem(@RequestBody ItemRequestDto requestDto,
                                              @PathVariable Long id,
                                              @RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Update item {}", id);
+        log.info("Обновление вещи {}", id);
         return itemClient.updateItem(requestDto, id, userId);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteItem(@PathVariable Long id) {
-        log.info("Delete item {}", id);
+        log.info("Удаление вещи по ид {}", id);
         return itemClient.deleteItem(id);
     }
 
@@ -62,14 +68,17 @@ public class ItemController {
                                              @RequestHeader("X-Sharer-User-Id") Long userId,
                                              @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Search items by text {}", text);
+        log.info("Поиск по имени {}", text);
+        if (text.isBlank()){
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
         return itemClient.searchItem(userId, text,  from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> createComment(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId,
-                                                @Valid @RequestBody CommentRequestDto requestDto) {
-        log.info("Create comment to item {}", itemId);
+                                                @Valid @RequestBody  CommentRequestDto requestDto) {
+        log.info("Добавление комментария к вещи {}", itemId);
         return itemClient.createComment(itemId, userId, requestDto);
     }
 }

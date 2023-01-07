@@ -1,9 +1,6 @@
 package ru.practicum.shareit.request;
 
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -28,7 +25,7 @@ public class ItemRequestController {
 
   @PostMapping
   public ItemRequestDto create(@RequestHeader("X-Sharer-User-Id") long requesterId,
-                               @RequestBody @Valid ItemRequestDto itemRequestDto) {
+                               @RequestBody ItemRequestDto itemRequestDto) {
     return itemRequestService.create(requesterId, itemRequestDto);
   }
 
@@ -39,8 +36,8 @@ public class ItemRequestController {
 
   @GetMapping("/all")
   public List<ItemRequestDto> get(@RequestHeader("X-Sharer-User-Id") long requesterId,
-                                  @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                  @RequestParam(value = "size", defaultValue = "1000") @Positive Integer size) {
+                                  @RequestParam(value = "from", defaultValue = "0")  Integer from,
+                                  @RequestParam(value = "size", defaultValue = "1000")  Integer size) {
     return itemRequestService.getList(requesterId, from, size);
   }
 

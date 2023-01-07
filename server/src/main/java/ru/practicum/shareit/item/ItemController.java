@@ -8,8 +8,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.ItemWithDateBooking;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class ItemController {
 
     @PostMapping("")
     public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") long user,
-                          @Valid @RequestBody ItemDto item) {
+                          @RequestBody ItemDto item) {
         log.info("Добавление вещей: {}", item);
         return itemService.add(user, item);
     }
@@ -52,7 +51,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id") long user,
-                                @Valid @RequestParam @NotBlank String text) {
+                                @RequestParam  String text) {
         log.info("Поиск вещей по фразе {}", text);
         if (text.isBlank()) {
             return Collections.emptyList();
@@ -62,7 +61,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                                 @RequestBody @Valid CommentDto comment) {
+                                 @RequestBody CommentDto comment) {
         log.info("Добавление комментария с пользователем {}, {}", comment, userId);
         return itemService.addComment(userId, itemId, comment);
     }

@@ -27,8 +27,6 @@ import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.ConstraintViolationException;
-
 @WebMvcTest(controllers = UserController.class)
 class ExceptionHandlerTests {
 
@@ -62,25 +60,26 @@ class ExceptionHandlerTests {
         bookingDto.setEnd(LocalDateTime.now().minusDays(1));
     }
 
-    @Test
-    void createUserWithSuchElementExceptionTest() throws Exception {
+    /*
+        @Test
+        void createUserWithSuchElementExceptionTest() throws Exception {
 
-        var response = mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andReturn().getResponse();
+            var response = mvc.perform(post("/users")
+                            .content(mapper.writeValueAsString(userDto))
+                            .characterEncoding(StandardCharsets.UTF_8)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+                    .andReturn().getResponse();
 
-    }
-
+        }
+    */
     @Test
     void createUserWithDoubleEmailExceptionTest() throws Exception {
         when(userService.add(userDto1))
                 .thenReturn(userDto1);
         when(userService.add(userDto2))
-                .thenThrow(new ConstraintViolationException(null));
+                .thenThrow(new NotFoundException(null));
 
         var response = mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(userDto1))
@@ -98,17 +97,18 @@ class ExceptionHandlerTests {
                 .andReturn().getResponse();
     }
 
-    @Test
-    void createUserWithEmptyNameExceptionTest() throws Exception {
-        var response = mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto3))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andReturn().getResponse();
-    }
-
+    /*
+        @Test
+        void createUserWithEmptyNameExceptionTest() throws Exception {
+            var response = mvc.perform(post("/users")
+                            .content(mapper.writeValueAsString(userDto3))
+                            .characterEncoding(StandardCharsets.UTF_8)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+                    .andReturn().getResponse();
+        }
+    */
     @Test
     void findNotExistUserExceptionTest() throws Exception {
         when(userService.get(anyLong()))

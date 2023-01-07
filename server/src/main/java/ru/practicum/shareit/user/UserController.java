@@ -49,7 +49,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public UserDto delete(@PathVariable("userId") long userId) {
-        log.info("Обновление пользователя:{}", userId);
+        log.info("Удаление пользователя:{}", userId);
         return userService.delete(userId);
     }
 

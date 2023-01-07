@@ -1,0 +1,59 @@
+package ru.practicum.shareit.exception;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import javax.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+
+@RestControllerAdvice
+@Slf4j
+public class ErrorHandler {
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> validationException(final IllegalArgumentException ex) {
+        log.error("IllegalArgumentException {}", ex.toString());
+        Map<String, String> map = new HashMap<>();
+        String message = "Unknown state: UNSUPPORTED_STATUS";
+        map.put("error", message);
+        return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> constraintViolationException(ConstraintViolationException ex) {
+        log.error("constraintViolationException  {}", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<String> noItemUserException(NoSuchElementException ex) {
+        log.error("noItemUserException {}", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.error("methodArgumentNotValidException  {}", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> throwable(Throwable ex) {
+        log.error("throwable2 " + ex.toString());
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.toString());
+        return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+
+}

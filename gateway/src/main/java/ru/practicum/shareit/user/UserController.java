@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.Create;
+import ru.practicum.shareit.Update;
 import ru.practicum.shareit.user.dto.UserRequestDto;
 
 import javax.validation.Valid;
@@ -20,32 +22,32 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Object> getUsers() {
-        log.info("Get all users");
+        log.info("Получение всех пользователей");
         return userClient.getUsers();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUser(@PathVariable Long id) {
-        log.info("Get user {}", id);
+        log.info("Получение пользователя:{}", id);
         return userClient.getUser(id);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequestDto requestDto) {
-        log.info("Creating user");
+    public ResponseEntity<Object> createUser(@RequestBody @Validated(Create.class) UserRequestDto requestDto) {
+        log.info("Добавление пользователя: {}", requestDto);
         return userClient.createUser(requestDto);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updateUser(@RequestBody UserRequestDto requestDto,
+    public ResponseEntity<Object> updateUser(@Validated(Update.class) @RequestBody UserRequestDto requestDto,
                                              @PathVariable Long id) {
-        log.info("Update user {}", id);
+        log.info("Обновление пользователя:{}, {}", id, requestDto);
         return userClient.updateUser(id, requestDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
-        log.info("Delete user {}", id);
+        log.info("Удаление пользователя:{}", id);
         return userClient.deleteUser(id);
     }
 }

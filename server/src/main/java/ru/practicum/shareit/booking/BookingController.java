@@ -8,8 +8,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.State;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -44,8 +42,8 @@ public class BookingController {
     @GetMapping
     public List<BookingResponseDto> getListByUser(@RequestHeader("X-Sharer-User-Id") long userId,
                                                   @RequestParam(defaultValue = "ALL") State state,
-                                                  @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                                  @RequestParam(value = "size", defaultValue = "10000") @Positive Integer size) {
+                                                  @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                  @RequestParam(value = "size", defaultValue = "10000") Integer size) {
         log.info("Получение по  ID пользователя {},{}",userId, state);
         return bookingService.getSort(userId, state, from, size);
     }
@@ -53,8 +51,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingResponseDto> getListByItemOwner(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                                        @RequestParam(defaultValue = "ALL") State state,
-                                                       @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                                       @RequestParam(value = "size", defaultValue = "10000") @Positive Integer size) {
+                                                       @RequestParam(value = "from", defaultValue = "0")  Integer from,
+                                                       @RequestParam(value = "size", defaultValue = "10000") Integer size) {
         log.info("Получение по владельцу {},{}, {}, {}",ownerId, state, from, size);
         return bookingService.getByItemOwner(ownerId, state, from, size);
     }

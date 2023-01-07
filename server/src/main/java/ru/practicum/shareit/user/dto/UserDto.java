@@ -5,11 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
-import ru.practicum.shareit.Create;
-import ru.practicum.shareit.Update;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder(toBuilder = true)
@@ -17,10 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Validated
 public class UserDto {
     private long id;
-    @NotBlank(groups = Create.class)
     private String name;
-    @Email(groups = {Create.class, Update.class})
-    @NotBlank(groups = Create.class)
     private String email;
 
     public UserDto(long id, String name, String email) {

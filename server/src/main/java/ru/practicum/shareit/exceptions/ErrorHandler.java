@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -47,12 +46,12 @@ public class ErrorHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler
+/*    @ExceptionHandler
     public ResponseEntity<String> constraintViolationException(ConstraintViolationException ex) {
         log.error("constraintViolationException  {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
+*/
     @ExceptionHandler
     public ResponseEntity<String> throwable(Throwable ex) {
         log.error("throwable " + ex.toString());

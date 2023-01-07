@@ -23,13 +23,13 @@ public class ItemRequestController {
     @PostMapping
     public ResponseEntity<Object> createItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                     @Valid @RequestBody ItemRequestRequestDto requestDto) {
-        log.info("Create item request by user {}", userId);
+        log.info("Создание запроса {}", userId);
         return itemRequestClient.createItemRequest(userId, requestDto);
     }
 
     @GetMapping
     public ResponseEntity<Object> getItemRequestsByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Get all user {} item requests", userId);
+        log.info("Получение всех запросов пользователя", userId);
         return itemRequestClient.getItemRequestsByUser(userId);
     }
 
@@ -37,14 +37,14 @@ public class ItemRequestController {
     public ResponseEntity<Object> getAllItemRequests(@RequestHeader("X-Sharer-User-Id") long userId,
                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Get all item requests without user {}", userId);
+        log.info("Получение всех запросов без пользователя {}", userId);
         return itemRequestClient.getAll(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getItemRequest(@PathVariable Long requestId,
                                                  @RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Get item request {}", requestId);
+        log.info("Получение информации по запросу {}", requestId);
         return itemRequestClient.getItemRequest(requestId, userId);
     }
 }

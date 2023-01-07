@@ -19,7 +19,6 @@ import ru.practicum.shareit.item.model.ItemWithDateBooking;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,7 +70,7 @@ public class ItemService {
     @Transactional
     public ItemDto add(long user, ItemDto itemDto) {
         Item item = itemStorage.save(MapToItem.fromDto(itemDto, userRepository.findById(user).orElseThrow(() -> {
-                    throw new ValidationException("Такого пользователь не существует");
+                    throw new NotFoundException("Такого пользователь не существует");
                 })
         ));
         return MapToItem.toDto(item);
