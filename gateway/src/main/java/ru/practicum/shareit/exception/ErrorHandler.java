@@ -45,6 +45,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<String> handleBookingException(final BookingException e) {
+        log.error("Исключение! BookingException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<Map<String, String>> throwable(Throwable ex) {
         log.error("throwable {}", ex.toString());
         Map<String, String> map = new HashMap<>();
