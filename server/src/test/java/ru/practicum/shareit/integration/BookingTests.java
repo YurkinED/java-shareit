@@ -634,11 +634,6 @@ class BookingTests {
         BookingResponseDto bookingResponseDto = BookingMapper.bookingToBookingResponseDto(booking);
 
         assertThatThrownBy(() -> {
-            bookingService.add(user2.getId(), BookingMapper.bookingToBookingDto(booking));
-        }).isInstanceOf(BookingException.class)
-                .hasMessageContaining("Дата старта не может быть позже или равна окончанию");
-
-        assertThatThrownBy(() -> {
             bookingService.add(user2.getId(), BookingMapper.bookingToBookingDto(booking2));
         }).isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("Бронирование не найдено");

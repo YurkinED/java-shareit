@@ -35,9 +35,6 @@ public class BookingService {
 
     @Transactional
     public BookingResponseDto add(long userId, BookingDto booking) {
-        if (!booking.getStart().isBefore(booking.getEnd())) {
-            throw new BookingException("Дата старта не может быть позже или равна окончанию");
-        }
         Item item = itemRepository.findById(booking.getItemId()).orElseThrow(() -> {
             throw new NotFoundException("Бронирование не найдено");
         });
