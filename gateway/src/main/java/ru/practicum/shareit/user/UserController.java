@@ -13,7 +13,6 @@ import ru.practicum.shareit.user.dto.UserRequestDto;
 @Controller
 @RequestMapping("/users")
 @Slf4j
-@Validated
 @RequiredArgsConstructor
 public class UserController {
     private final UserClient userClient;
@@ -26,7 +25,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUser(@PathVariable Long id) {
-        log.info("Получение пользователя:{}", id);
+        log.info("Получение пользователя: {}", id);
         return userClient.getUser(id);
     }
 
@@ -39,13 +38,13 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateUser(@Validated(Update.class) @RequestBody UserRequestDto requestDto,
                                              @PathVariable Long id) {
-        log.info("Обновление пользователя:{}, {}", id, requestDto);
+        log.info("Обновление пользователя: {}, {}", id, requestDto);
         return userClient.updateUser(id, requestDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
-        log.info("Удаление пользователя:{}", id);
+        log.info("Удаление пользователя: {}", id);
         return userClient.deleteUser(id);
     }
 }

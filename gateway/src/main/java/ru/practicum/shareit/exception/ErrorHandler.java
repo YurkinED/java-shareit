@@ -46,7 +46,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> throwable(Throwable ex) {
-        log.error("throwable2 " + ex.toString());
+        log.error("throwable {}", ex.toString());
         Map<String, String> map = new HashMap<>();
         map.put("error", ex.toString());
         return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
